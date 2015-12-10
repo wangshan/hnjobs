@@ -1,2 +1,6 @@
 jobs.txt
 whoishiring.txt
+*.swp
+*.swo
+temp
+tmp

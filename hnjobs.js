@@ -2,113 +2,78 @@
 
 var https = require("https");
 var fs = require("fs");
-//var Firebase = require("firebase");
-//var itemRef = new Firebase('https://hacker-news.firebaseio.com/v0/item');
 
-var requestWhosHiring = function() {
+var requestById = function(type, id, onEnd) {
     var options = {
         hostname: "hacker-news.firebaseio.com",
-        path: "/v0/askstories.json?print=pretty",
+        path: "/v0/" + type + id + ".json?print=pretty",
         method: "GET",
         headers: { Accept: "text/html" }
     };
 
-    var whoIsHiring = /Ask HN: Who is hiring.*/;
     var request = https.request(options,
         function(response) {
             console.log("Server responded with status code: ", response.statusCode);
-            console.log("Server responded with header: ", response.headers);
-            var body = "";
-            response.on("data", function(chunk) {
-                process.stdout.write(chunk);
-                //process.stdout.write(typeof(chunk));
-                if (whoIsHiring.test(chunk.title)) {
-                    console.log("--", chunk);
-                    body += chunk;
-                }
-            });
-            response.on('end', function() {
-                console.log(body);
-                fs.appendFile("./whoishiring.txt", body, function(err) {
-                    if (err) {
-                        console.log("Failed to write to file: ", err);
-                    }
-                    else {
-                        //console.log("File written");
-                    }
-                });
-            });
-        });
-    request.end();
-}
-
-var requestJobDetail = function(id) {
-    var options2 = {
-        hostname: "hacker-news.firebaseio.com",
-        path: "/v0/item/" + id + ".json?print=pretty",
-        method: "GET",
-        headers: { Accept: "text/html" }
-    };
-
-    var request = https.request(options2,
-        function(response) {
-            //console.log("Server responded with status code: ", response.statusCode);
             //console.log("Server responded with header: ", response.headers);
             var body = "";
             response.on("data", function(chunk) {
-                process.stdout.write(chunk);
                 body += chunk;
             });
             response.on('end', function() {
-                //console.log(body);
-                fs.appendFile("./jobs.txt", body, function(err) {
-                    if (err) {
-                        console.log("Failed to write to file: ", err);
-                    }
-                    else {
-                        //console.log("File written");
-                    }
-                });
+                var content = JSON.parse(body);
+                onEnd(content);
             });
         });
     request.end();
+
+    request.on("error", function(e) {
+        console.error(e);
+    });
 }
 
-var options = {
-    hostname: "hacker-news.firebaseio.com",
-    path: "/v0/jobstories.json?print=pretty",
-    method: "GET",
-    headers: { Accept: "text/html" }
-};
-
-var request = https.request(options,
-    function(response) {
-        //console.log("Server responded with status code: ", response.statusCode);
-        //console.log("Server responded with header: ", response.headers);
-        var body = "";
-        response.on("data", function(chunk) {
-            //process.stdout.write(chunk);
-            body += chunk;
-            //console.log("type of chunk: ", typeof(chunk));
-        });
-        response.on('end', function() {
-            //console.log(body);
-            var jobIds = JSON.parse(body);
-            //console.log(jobIds);
-            for (var i = jobIds.length-1; i >=0; i--) {
-                console.log("id: ", jobIds[i]);
-                requestJobDetail(jobIds[i]);
-            }
-            requestWhosHiring();
-            //console.log("\nResponse ended\n");
+var parseWhosHiring = function(fileName, data) {
+    var whoIsHiringTitle = /Ask HN: Who is hiring.*December 2015/;
+    if (whoIsHiringTitle.test(data.title)) {
+        console.log("--\n", data, "--\n");
+        data.kids.forEach(function(entry) {
+            console.log(entry);
+            requestById("item/", entry, function(job) {
+                saveJobDetail(fileName, JSON.stringify(job, null, 4));
+            });
         });
     }
-    );
+}
 
-request.end();
+var saveJobDetail = function(fileName, data) {
+    console.log(data);
+    console.log("-----");
+    fs.appendFile(fileName, data, function(err) {
+        if (err) {
+            console.log("Failed to write to file: ", err);
+        }
+        else {
+            console.log("File ", fileName, " written");
+        }
+    });
+}
 
-request.on("error", function(e) {
-    console.error(e);
+requestById("", "jobstories", function(jobIds) {
+    console.log(jobIds);
+    jobIds.forEach(function(jobId) {
+        requestById("item/", jobId, function(job) {
+            saveJobDetail("./jobs.txt", JSON.stringify(job, null, 4));
+        });
+    });    
 });
 
-console.log("hello");
+requestById("user/", "whoishiring", function(whoishiring) {
+    var postIds = whoishiring.submitted;
+    postIds.forEach(function(id) {
+        console.log("id: ", id);
+        requestById("item/", id, function(data) {
+            parseWhosHiring("./whoishiring.txt", data);
+        });
+    });
+});
+
+console.log("starting...");
