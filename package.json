@@ -1,0 +1,11 @@
+{
+  "name": "hnjobs",
+  "version": "1.0.0",
+  "description": "Website for hacker news jobs",
+  "author": "Shan Wang <uniwangshan@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3"
+  }
+}

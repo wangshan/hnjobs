@@ -57,6 +57,7 @@ var saveJobDetail = function(fileName, data) {
     });
 }
 
+// individual job posts
 requestById("", "jobstories", function(jobIds) {
     console.log(jobIds);
     jobIds.forEach(function(jobId) {
@@ -66,6 +67,7 @@ requestById("", "jobstories", function(jobIds) {
     });    
 });
 
+// who's hiring posts
 requestById("user/", "whoishiring", function(whoishiring) {
     var postIds = whoishiring.submitted;
     postIds.forEach(function(id) {
