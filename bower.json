@@ -1,0 +1,26 @@
+{
+  "name": "hnjobs",
+  "description": "Website for hacker news jobs",
+  "main": "index.html",
+  "authors": [
+    "Shan Wang <uniwangshan@gmail.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "bootstrap": "~3.3.6",
+    "font-awesome": "~4.5.0",
+    "angular-resource": "~1.4.8",
+    "angular-ui-router": "~0.2.15",
+    "angular-route": "~1.4.8"
+  }
+}
