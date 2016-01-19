@@ -1,15 +1,15 @@
 var Job = require('../../models/job');
-var router = require('expess').Router();
+var router = require('express').Router();
 
 router.get('/', function(req, res, next) {
     Job.find()
     .sort('-date')
-    .exec(function(err, jobs)) {
+    .exec(function(err, jobs) {
         if (err) {
             return next(err);
         }
         res.json(jobs);
-    }
+    });
 });
 
 router.post('/', function(req, res, err) {
@@ -29,4 +29,4 @@ router.post('/', function(req, res, err) {
     });
 });
 
-models.exports = router;
+module.exports = router;
