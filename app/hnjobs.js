@@ -1,7 +1,6 @@
-#!/usr/bin/env node
-
 var https = require("https");
 var fs = require("fs");
+var JobDatum = require('./models/job');
 
 var requestById = function(type, id, onEnd) {
     var options = {
@@ -57,25 +56,47 @@ var saveJobDetail = function(fileName, data) {
     });
 }
 
-// individual job posts
-requestById("", "jobstories", function(jobIds) {
-    console.log(jobIds);
-    jobIds.forEach(function(jobId) {
-        requestById("item/", jobId, function(job) {
-            saveJobDetail("./jobs.txt", JSON.stringify(job, null, 4));
-        });
-    });    
-});
+var saveJobToDatabase = function(job) {
+    console.log("saving...");
+    var jobDatum = new JobDatum({
+        id: job.id,
+        company: job.title,
+        position: job.title,
+        date: job.time,
+        description: job.url,
+    });
 
-// who's hiring posts
-requestById("user/", "whoishiring", function(whoishiring) {
-    var postIds = whoishiring.submitted;
-    postIds.forEach(function(id) {
-        console.log("id: ", id);
-        requestById("item/", id, function(data) {
-            parseWhosHiring("./whoishiring.txt", data);
+    jobDatum.save(function(err, savedJob) {
+        if (err) {
+            console.log("Failed to save a new job");
+        }
+    });
+}
+
+var getJobs = function(fileName) {
+    return requestById("", "jobstories", function(jobIds) {
+        console.log(jobIds);
+        jobIds.forEach(function(jobId) {
+            requestById("item/", jobId, function(job) {
+//                saveJobDetail(fileName, JSON.stringify(job, null, 4));
+                saveJobToDatabase(job);
+            });
         });
     });
-});
+}
 
-console.log("starting...");
+var getWhoIsHiring = function(fileName, filter) {
+    return requestById("user/", "whoishiring", function(whoishiring) {
+        var postIds = whoishiring.submitted;
+        postIds.forEach(function(id) {
+            console.log("id: ", id);
+            requestById("item/", id, function(data) {
+                parseWhosHiring("./whoishiring.txt", data);
+            });
+        });
+    });
+}
+
+module.exports.getJobs = getJobs;
+module.exports.getWhoIsHiring = getWhoIsHiring;
+

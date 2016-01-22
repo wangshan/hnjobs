@@ -6,6 +6,7 @@ router.get('/', function(req, res, next) {
     .sort('-date')
     .exec(function(err, jobs) {
         if (err) {
+            console.log("Can't find any jobs");
             return next(err);
         }
         res.json(jobs);
@@ -16,8 +17,8 @@ router.post('/', function(req, res, err) {
     var newJob = new Job({
         id: req.body.id,
         company: req.body.company,
-        title: req.body.title,
-        date: req.body.date,
+        position: req.body.position,
+        date: req.body.time,
         description: req.body.description,
     });
 
