@@ -12,7 +12,7 @@ var requestById = function(type, id, onEnd) {
 
     var request = https.request(options,
         function(response) {
-            console.log("Server responded with status code: ", response.statusCode);
+            //console.log("Server responded with status code: ", response.statusCode);
             //console.log("Server responded with header: ", response.headers);
             var body = "";
             response.on("data", function(chunk) {
@@ -26,23 +26,28 @@ var requestById = function(type, id, onEnd) {
     request.end();
 
     request.on("error", function(e) {
-        console.error(e);
+        console.error("request has error: " + e);
     });
 }
 
-var parseWhosHiring = function(fileName, data) {
-    var whoIsHiringTitle = /Ask HN: Who is hiring.*December 2015/;
-    if (whoIsHiringTitle.test(data.title)) {
+// TODO: filter based on current date?
+
+var parseWhosHiring = function(fileName, data, filter) {
+    var re = new RegExp("Ask HN: Who is hiring.*" + filter, "gi");
+    if (re.test(data.title)) {
         console.log("--\n", data, "--\n");
         data.kids.forEach(function(entry) {
-            console.log(entry);
+            console.log("requesting item/" + entry);
             requestById("item/", entry, function(job) {
-                saveJobDetail(fileName, JSON.stringify(job, null, 4));
+                // TODO: need to parse job.text
+//                saveJobDetail(fileName, JSON.stringify(job, null, 4));
+                saveJobToDatabase(job);
             });
         });
     }
 }
 
+// for debugging only
 var saveJobDetail = function(fileName, data) {
     console.log(data);
     console.log("-----");
@@ -57,20 +62,29 @@ var saveJobDetail = function(fileName, data) {
 }
 
 var saveJobToDatabase = function(job) {
-    console.log("saving...");
+//    console.log("saving..." + job.id);
+//    var date_ = new Date(job.time * 1000);
+//    console.log("timestamp = " + job.time + ", date = " + date_);
     var jobDatum = new JobDatum({
         id: job.id,
+        time: job.time * 1000,
         company: job.title,
         position: job.title,
-        date: job.time,
-        description: job.url,
+        description: job.text,
+        url: job.url,
     });
 
-    jobDatum.save(function(err, savedJob) {
-        if (err) {
-            console.log("Failed to save a new job");
-        }
-    });
+    // only save if job.id is not present and timestamp received is newer
+    JobDatum.update(
+            { $and: [{id: jobDatum.id}, {time: {$lt: jobDatum.time}}] },
+            { $setOnInsert: jobDatum},
+            { upsert: true},
+            function(err, numAffected) {
+                if (err) {
+                    console.log("Failed to save a new job");
+                }
+            }
+            );
 }
 
 var getJobs = function(fileName) {
@@ -78,7 +92,6 @@ var getJobs = function(fileName) {
         console.log(jobIds);
         jobIds.forEach(function(jobId) {
             requestById("item/", jobId, function(job) {
-//                saveJobDetail(fileName, JSON.stringify(job, null, 4));
                 saveJobToDatabase(job);
             });
         });
@@ -91,7 +104,7 @@ var getWhoIsHiring = function(fileName, filter) {
         postIds.forEach(function(id) {
             console.log("id: ", id);
             requestById("item/", id, function(data) {
-                parseWhosHiring("./whoishiring.txt", data);
+                parseWhosHiring(fileName, data, filter);
             });
         });
     });

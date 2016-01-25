@@ -1,10 +1,11 @@
 var db = require('../db');
 var Job = db.model('Job', {
     id: { type: String, required: true },
-    company: { type: String, required: true },
-    position: { type: String, required: true },
-    date: { type: Date, required: true },
+    time: { type: Number, required: true },
+    company: { type: String, required: false },
+    position: { type: String, required: false },
     description: { type: String, required: false },
+    url: { type: String, required: false },
 });
 
 module.exports = Job;

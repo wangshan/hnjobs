@@ -20,6 +20,7 @@ router.post('/', function(req, res, err) {
         position: req.body.position,
         date: req.body.time,
         description: req.body.description,
+        url: req.body.url,
     });
 
     newJob.save(function(err, job) {
