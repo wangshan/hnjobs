@@ -4,3 +4,5 @@ whoishiring.txt
 *.swo
 temp
 tmp
+.DS_Store
+data
