@@ -74,17 +74,46 @@ var saveJobToDatabase = function(job) {
         url: job.url,
     });
 
-    // only save if job.id is not present and timestamp received is newer
+//    JobDatum.findOne(
+//            { id: jobDatum.id }
+//            function(err, existing) {
+//                if (!err) {
+//                    if (!existing || existing.time < jobDatum.time) {
+//                        existing = jobDatum;
+//                    }
+//                    existing.save(function(err) {
+//                        if (err) {
+//                            console.log("Failed to save a new job");
+//                        }
+//                    });
+//                }
+//            }
+//            );
+
+    // only save if job.id is not present
     JobDatum.update(
-            { $and: [{id: jobDatum.id}, {time: {$lt: jobDatum.time}}] },
-            { $setOnInsert: jobDatum},
-            { upsert: true},
+            { id: jobDatum.id },
+            { $setOnInsert: jobDatum },
+            { upsert: true },
             function(err, numAffected) {
                 if (err) {
                     console.log("Failed to save a new job");
                 }
             }
             );
+
+//    // only save if job.id is not present and timestamp is older
+//    // this won't work!
+//    JobDatum.update(
+//            { $and: [{id: jobDatum.id}, {time: {$lt: jobDatum.time}}] },
+//            { $setOnInsert: jobDatum},
+//            { upsert: true},
+//            function(err, numAffected) {
+//                if (err) {
+//                    console.log("Failed to save a new job");
+//                }
+//            }
+//            );
 }
 
 var getJobs = function(fileName) {

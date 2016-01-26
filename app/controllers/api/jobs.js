@@ -16,9 +16,9 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, err) {
     var newJob = new Job({
         id: req.body.id,
+        time: req.body.time,
         company: req.body.company,
         position: req.body.position,
-        date: req.body.time,
         description: req.body.description,
         url: req.body.url,
     });
