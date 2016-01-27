@@ -7,14 +7,14 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             url: '/',
             views: {
                 'header': {
-                    templateUrl: 'views/header.html',
+                    templateUrl: 'static/templates/header.html',
                 },
                 'content': {
-                    templateUrl: 'views/home.html',
+                    templateUrl: 'static/templates/home.html',
                     controller: 'IndexController'
                 },
                 'footer': {
-                    templateUrl: 'views/footer.html',
+                    templateUrl: 'static/templates/footer.html',
                 }
             }
         })
@@ -22,7 +22,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             url: 'aboutus',
             views: {
                 'content@': {
-                    templateUrl: 'views/aboutus.html',
+                    templateUrl: 'static/templates/aboutus.html',
                     controller: 'AboutController'
                 }
             }
@@ -31,7 +31,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             url:'contactus',
             views: {
                 'content@': {
-                    templateUrl : 'views/contactus.html',
+                    templateUrl : 'static/templates/contactus.html',
                     controller  : 'ContactController'
                 }
             }
@@ -40,7 +40,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             url: 'menu',
             views: {
                 'content@': {
-                    templateUrl : 'views/menu.html',
+                    templateUrl : 'static/templates/menu.html',
                     controller  : 'MenuController'
                 }
             }
@@ -49,7 +49,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             url: 'menu/:id',
             views: {
                 'content@': {
-                    templateUrl : 'views/dishdetail.html',
+                    templateUrl : 'static/templates/dishdetail.html',
                     controller  : 'DishDetailController'
                }
             }
