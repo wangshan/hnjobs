@@ -3,7 +3,19 @@ var router = require('express').Router();
 
 router.get('/', function(req, res, next) {
     Job.find()
-    .sort('-date')
+    .sort('-time')
+    .exec(function(err, jobs) {
+        if (err) {
+            console.log("Can't find any jobs");
+            return next(err);
+        }
+        res.json(jobs);
+    });
+});
+
+router.get('/:id', function(req, res, next) {
+    Job.find({id: req.params.id})
+    .sort('-time')
     .exec(function(err, jobs) {
         if (err) {
             console.log("Can't find any jobs");

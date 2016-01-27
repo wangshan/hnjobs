@@ -1,7 +1,13 @@
 'use strict';
 
 angular.module('confusionApp')
-        .constant("baseURL", "http://localhost:3000/")
+        .constant("baseURL", "http://localhost:3000/api/")
+        .service('hnJobsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+            this.getHnJobs = function() {
+
+                return $resource(baseURL + "jobs/:id", null, {'update':{method: 'PUT'}}); 
+            };
+        }])
 
         .service('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     
