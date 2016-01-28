@@ -3,8 +3,8 @@ var concat = require('gulp-concat');
 
 gulp.task('js', function() {
     gulp.src('public/js/*.js')
-        .pipe(concat('app2.js'))
-        .pipe(gulp.dest('assets2'));
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('watch:js', ['js'], function() {

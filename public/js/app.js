@@ -54,8 +54,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
                }
             }
         });
-        // why ui.router doesn't otherwise on state?
+
         $urlRouterProvider.otherwise('/');
     })
-
 ;

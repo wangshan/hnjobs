@@ -2,18 +2,18 @@
 
 angular.module('confusionApp')
 
-        .controller('MenuController', ['$scope', 'menuFactory', function($scope, menuFactory) {
+        .controller('MenuController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
             
             $scope.tab = 1;
             $scope.filtText = '';
             $scope.showDetails = false;
-            $scope.showMenu = false;
+            $scope.showHnJobs = false;
             $scope.message = "Loading ...";
 
-            $scope.dishes = menuFactory.getDishes().query(
+            $scope.dishes = hnJobsFactory.getHnJobs().query(
                 function(response) { // the response is the actual data
-                    $scope.dishes = response;
-                    $scope.showMenu = true;
+                    $scope.hnJobs = response;
+                    $scope.showHnJobs = true;
                 },
                 function(response) { // but here is the response object, why?
                     $scope.message = "Error: " + response.status + " " + response.statusText;
@@ -24,13 +24,13 @@ angular.module('confusionApp')
                 $scope.tab = setTab;
                 
                 if (setTab === 2) {
-                    $scope.filtText = "appetizer";
+                    $scope.filtText = "January 2016";
                 }
                 else if (setTab === 3) {
-                    $scope.filtText = "mains";
+                    $scope.filtText = "December 2015";
                 }
                 else if (setTab === 4) {
-                    $scope.filtText = "dessert";
+                    $scope.filtText = "November 2015";
                 }
                 else {
                     $scope.filtText = "";
@@ -78,12 +78,12 @@ angular.module('confusionApp')
             };
         }])
 
-        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
+        .controller('DishDetailController', ['$scope', '$stateParams', 'hnJobsFactory', function($scope, $stateParams, hnJobsFactory) {
 
             $scope.showDish = false;
             $scope.message = "Loading ...";
 
-            $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id, 10)})
+            $scope.dish = hnJobsFactory.getHnJobs().get({id:parseInt($stateParams.id, 10)})
             .$promise.then(
                 function(response) {
                     $scope.dish = response;
@@ -96,7 +96,7 @@ angular.module('confusionApp')
 
             // using $http
 //            $scope.dish = {};
-//            menuFactory.getDish(parseInt($stateParams.id, 10))
+//            hnJobsFactory.getDish(parseInt($stateParams.id, 10))
 //            .then(
 //                function(response) {
 //                    $scope.dish = response.data;
@@ -109,7 +109,7 @@ angular.module('confusionApp')
             
         }])
 
-        .controller('DishCommentController', ['$scope', 'menuFactory', function($scope, menuFactory) {
+        .controller('DishCommentController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
             
             //Step 1: Create a JavaScript object to hold the comment from the form
             $scope.newComment = {
@@ -128,7 +128,7 @@ angular.module('confusionApp')
                 
                 // Step 3: Push your comment into the dish's comment array
                 $scope.dish.comments.push($scope.newComment);
-                menuFactory.getDishes().update({id: $scope.dish.id}, $scope.dish);
+                hnJobsFactory.getHnJobs().update({id: $scope.dish.id}, $scope.dish);
                 
                 //Step 4: reset your form to pristine
                 $scope.commentForm.$setPristine();
@@ -143,14 +143,14 @@ angular.module('confusionApp')
             }
         }])
 
-        .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory) {
+        .controller('IndexController', ['$scope', 'hnJobsFactory', 'corporateFactory', function($scope, hnJobsFactory, corporateFactory) {
 
             $scope.showPromotion = false;
             $scope.showDish = false;
             $scope.showChef = false;
             $scope.message = "Loading ...";
 
-            $scope.promotion = menuFactory.getPromotions().get({id:0})
+            $scope.promotion = hnJobsFactory.getPromotions().get({id:0})
             .$promise.then(
                 function(response) {
                     $scope.promotion = response;
@@ -161,7 +161,7 @@ angular.module('confusionApp')
                 }
             );
 
-            $scope.featuredDish = menuFactory.getDishes().get({id:0})
+            $scope.featuredDish = hnJobsFactory.getHnJobs().get({id:0})
             .$promise.then(
                 function(response) {
                     $scope.featuredDish = response;
