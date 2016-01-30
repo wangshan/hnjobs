@@ -2,7 +2,7 @@
 
 angular.module('confusionApp')
 
-        .controller('MenuController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
+        .controller('HnJobsController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
             
             $scope.tab = 1;
             $scope.filtText = '';
@@ -10,9 +10,9 @@ angular.module('confusionApp')
             $scope.showHnJobs = false;
             $scope.message = "Loading ...";
 
-            $scope.dishes = hnJobsFactory.getHnJobs().query(
+            $scope.jobs = hnJobsFactory.getHnJobs().query(
                 function(response) { // the response is the actual data
-                    $scope.hnJobs = response;
+                    $scope.jobs = response;
                     $scope.showHnJobs = true;
                 },
                 function(response) { // but here is the response object, why?

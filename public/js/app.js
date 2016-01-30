@@ -41,7 +41,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
             views: {
                 'content@': {
                     templateUrl : 'static/templates/menu.html',
-                    controller  : 'MenuController'
+                    controller  : 'HnJobsController'
                 }
             }
         })

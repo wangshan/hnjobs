@@ -1,12 +1,12 @@
 
     <div class="container">
-        <div class="row row-content" ng-controller="MenuController">
-            <!-- only show this div is !showMenu is true, otherwise remove this
+        <div class="row row-content" ng-controller="HnJobsController">
+            <!-- only show this div is !showHnJobs is true, otherwise remove this
             element from the DOM -->
-            <div class="col-xs-12" ng-if="!showMenu">
+            <div class="col-xs-12" ng-if="!showHnJobs">
                 <h3>{{message}}</h3>
             </div>
-            <div class="col-xs-12" ng-if="showMenu">
+            <div class="col-xs-12" ng-if="showHnJobs">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
                      ng-class="{active: isSelected(1)}">
@@ -31,18 +31,20 @@
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="dish in dishes | filter: filtText">
+                        <li class="media" ng-repeat="job in jobs | filter: filtText">
                             <div class="media-left media-middle">
-                                <a ui-sref="app.dishdetails({id: dish.id})">
+                                <!--
+                                <a ui-sref="app.jobdetails({id: job.id})">
                                 <img class="media-object img-thumbnail"
-                                 ng-src={{dish.image}} alt="Uthappizza">
+                                 ng-src={{job.image}} alt="Uthappizza">
                                 </a>
+                                -->
                             </div>
                             <div class="media-body">
-                                <h2 class="media-heading">{{dish.name}}
-                                 <span class="label label-danger">{{dish.label}}</span>
-                                 <span class="badge">{{dish.price | currency}}</span></h2>
-                                <p>{{dish.description}}</p>
+                                <h2 class="media-heading">{{job.position}}
+                                 <span class="label label-danger">{{job.label}}</span>
+                                 <span class="badge">{{job.time | date}}</span></h2>
+                                <p>{{job.description}}</p>
                             </div>
                         </li>
                     </ul>
