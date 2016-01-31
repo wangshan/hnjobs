@@ -11,7 +11,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
                 },
                 'content': {
                     templateUrl: 'static/templates/home.html',
-                    controller: 'IndexController'
+                    controller: 'HnJobsController'
                 },
                 'footer': {
                     templateUrl: 'static/templates/footer.html',
@@ -36,6 +36,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
                 }
             }
         })
+        /*
         .state('app.menu', {
             url: 'menu',
             views: {
@@ -54,6 +55,7 @@ angular.module('confusionApp', ['ui.router', 'ngResource'])
                }
             }
         });
+        */
 
         $urlRouterProvider.otherwise('/');
     })

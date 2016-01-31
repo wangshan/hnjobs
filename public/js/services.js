@@ -8,21 +8,13 @@ angular.module('confusionApp')
             };
         }])
 
-        .factory('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-    
-            var corpfac = {};
-    
-            corpfac.getLeaders = function() {
-                
+        .service('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+            this.getLeaders = function() {
                 return $resource(baseURL + "leadership/:id", null, {'update':{method: 'PUT'}}); 
             };
-
-            return corpfac; 
-    
         }])
 
         .service('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-
             this.getFeedback = function() {
                 return $resource(baseURL + "feedback/:id", null, {'save':{method: 'POST'}}); 
             }

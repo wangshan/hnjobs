@@ -6,7 +6,6 @@ angular.module('confusionApp')
             
             $scope.tab = 1;
             $scope.filtText = '';
-            $scope.showDetails = false;
             $scope.showHnJobs = false;
             $scope.message = "Loading ...";
 
@@ -40,15 +39,11 @@ angular.module('confusionApp')
             $scope.isSelected = function (checkTab) {
                 return ($scope.tab === checkTab);
             };
-    
-            $scope.toggleDetails = function() {
-                $scope.showDetails = !$scope.showDetails;
-            };
         }])
 
         .controller('ContactController', ['$scope', function($scope) {
 
-            $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
+            $scope.feedback = { mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
             
             var channels = [{value:"tel", label:"Tel."}, {value:"Email",label:"Email"}];
             
@@ -76,37 +71,6 @@ angular.module('confusionApp')
                     console.log($scope.feedback);
                 }
             };
-        }])
-
-        .controller('DishDetailController', ['$scope', '$stateParams', 'hnJobsFactory', function($scope, $stateParams, hnJobsFactory) {
-
-            $scope.showDish = false;
-            $scope.message = "Loading ...";
-
-            $scope.dish = hnJobsFactory.getHnJobs().get({id:parseInt($stateParams.id, 10)})
-            .$promise.then(
-                function(response) {
-                    $scope.dish = response;
-                    $scope.showDish = true;
-                },
-                function(response) {
-                    $scope.message = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-
-            // using $http
-//            $scope.dish = {};
-//            hnJobsFactory.getDish(parseInt($stateParams.id, 10))
-//            .then(
-//                function(response) {
-//                    $scope.dish = response.data;
-//                    $scope.showDish = true;
-//                },
-//                function(response) {
-//                    $scope.message = "Error: " + response.status + " " + response.statusText;
-//                }
-//            );
-            
         }])
 
         .controller('DishCommentController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
@@ -141,48 +105,6 @@ angular.module('confusionApp')
                     date: ""
                 };
             }
-        }])
-
-        .controller('IndexController', ['$scope', 'hnJobsFactory', 'corporateFactory', function($scope, hnJobsFactory, corporateFactory) {
-
-            $scope.showPromotion = false;
-            $scope.showDish = false;
-            $scope.showChef = false;
-            $scope.message = "Loading ...";
-
-            $scope.promotion = hnJobsFactory.getPromotions().get({id:0})
-            .$promise.then(
-                function(response) {
-                    $scope.promotion = response;
-                    $scope.showPromotion = true;
-                },
-                function(response) {
-                    $scope.message = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-
-            $scope.featuredDish = hnJobsFactory.getHnJobs().get({id:0})
-            .$promise.then(
-                function(response) {
-                    $scope.featuredDish = response;
-                    $scope.showDish = true;
-                },
-                function(response) {
-                    $scope.message = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-
-            $scope.chef = corporateFactory.getLeaders().get({id:3})
-            .$promise.then(
-                function(response) {
-                    $scope.chef = response;
-                    $scope.showChef = true;
-                },
-                function(response) {
-                    $scope.message = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-            
         }])
 
         .controller('AboutController', ['$scope', '$stateParams', 'corporateFactory', function($scope, $stateParams, corporateFactory) {
