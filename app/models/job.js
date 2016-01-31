@@ -6,6 +6,10 @@ var Job = db.model('Job', {
     position: { type: String, required: false },
     description: { type: String, required: false },
     url: { type: String, required: false },
+    source: { type: String, required: true, default: "HackerNews" },
+    monthPosted: { type: String, required: true, default: "January 2016" },
+    type: { type: String, required: false },
+    where: { type: String, required: false },
 });
 
 module.exports = Job;
