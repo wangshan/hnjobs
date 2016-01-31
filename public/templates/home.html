@@ -44,7 +44,7 @@
                                 <h2 class="media-heading">{{job.position}}
                                  <span class="label label-danger">{{job.source}}</span>
                                  <span class="badge">{{job.time | date}}</span></h2>
-                                <p>{{job.description}}</p>
+                                 <p ng-bind-html="job.description | asHtml"></p>
                             </div>
                         </li>
                     </ul>
