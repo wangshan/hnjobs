@@ -123,7 +123,7 @@ var saveJobToDatabase = function(job) {
     }
 
 //    JobDatum.findOne(
-//            { id: jobDatum.id }
+//            { id: jobDatum.id },
 //            function(err, existing) {
 //                if (!err) {
 //                    if (!existing || existing.time < jobDatum.time) {
