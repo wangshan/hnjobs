@@ -35,7 +35,7 @@ var requestById = function(type, id, onEnd) {
 var parseWhosHiring = function(fileName, data, filter) {
     var re = new RegExp("Ask HN: Who is hiring.*" + filter, "gi");
     if (re.test(data.title)) {
-        console.log("--\n", data, "--\n");
+//        console.log("--\n", data, "--\n");
         data.kids.forEach(function(entry) {
             console.log("requesting item/" + entry);
             requestById("item/", entry, function(job) {
@@ -61,18 +61,66 @@ var saveJobDetail = function(fileName, data) {
     });
 }
 
-var saveJobToDatabase = function(job) {
-//    console.log("saving..." + job.id);
-//    var date_ = new Date(job.time * 1000);
-//    console.log("timestamp = " + job.time + ", date = " + date_);
-    var jobDatum = new JobDatum({
-        id: job.id,
-        time: job.time * 1000,
-        company: job.title,
-        position: job.title,
-        description: job.text,
-        url: job.url,
+// replace html coding with ascii character
+String.prototype.decodeHTML = function() {
+    var map = {"gt":">" /* , … */};
+    return this.replace(/&(#(?:x[0-9a-f]+|\d+)|[a-z]+);?/gi, function($0, $1) {
+        if ($1[0] === "#") {
+            return String.fromCharCode($1[1].toLowerCase() === "x"
+                ? parseInt($1.substr(2), 16)
+                : parseInt($1.substr(1), 10));
+        } else {
+            return map.hasOwnProperty($1) ? map[$1] : $0;
+        }
     });
+};
+
+var saveJobToDatabase = function(job) {
+    // don't show if the text is too short and there's no title
+    if ((!job.text || job.text.length < 16) && !job.title) {
+        return;
+    }
+    else {
+        if (!job.title) {
+            // this is the case for whoishiring posts
+            var title = job.text.split(/<[a-zA-Z]|\n/)[0];
+            var decodedTitle = title.decodeHTML();
+            job.title = decodedTitle.replace(/^[-\|\.\ ]+|[-\|\.\(\[\{\ ,;:]+$/g, '');
+            console.log("job.title = " + job.title);
+            var titleLine = "job.title = " + job.title + "\n";
+        }
+        if (!job.text) {
+            job.text = job.title;
+        }
+
+        var jobType = "Full Time";
+        var jobTypeRe = /part[\ \-]?time/gi;
+        if (jobTypeRe.test(job.text)) {
+            jobType = "Part Time";
+        }
+
+        var jobDatum = new JobDatum({
+            id: job.id,
+            time: job.time * 1000,
+            company: "",
+            position: job.title,
+            description: job.text,
+            url: job.url,
+            type: jobType,
+        });
+
+        // only save if job.id is not present
+        JobDatum.update(
+                { id: jobDatum.id },
+                { $setOnInsert: jobDatum },
+                { upsert: true },
+                function(err, numAffected) {
+                    if (err) {
+                        console.log("Failed to save a new job");
+                    }
+                }
+                );
+    }
 
 //    JobDatum.findOne(
 //            { id: jobDatum.id }
@@ -90,18 +138,6 @@ var saveJobToDatabase = function(job) {
 //            }
 //            );
 
-    // only save if job.id is not present
-    JobDatum.update(
-            { id: jobDatum.id },
-            { $setOnInsert: jobDatum },
-            { upsert: true },
-            function(err, numAffected) {
-                if (err) {
-                    console.log("Failed to save a new job");
-                }
-            }
-            );
-
 //    // only save if job.id is not present and timestamp is older
 //    // this won't work!
 //    JobDatum.update(
@@ -114,6 +150,7 @@ var saveJobToDatabase = function(job) {
 //                }
 //            }
 //            );
+
 }
 
 var getJobs = function(fileName) {
