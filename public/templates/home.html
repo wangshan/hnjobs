@@ -7,6 +7,7 @@
                 <h3>{{message}}</h3>
             </div>
             <div class="col-xs-12" ng-if="showHnJobs">
+                <!-- replace with a ng-repeat -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
                      ng-class="{active: isSelected(1)}">
@@ -32,19 +33,23 @@
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
                         <li class="media" ng-repeat="job in jobs | filter: filtText">
+                            <!--
                             <div class="media-left media-middle">
-                                <!--
                                 <a ui-sref="app.jobdetails({id: job.id})">
                                 <img class="media-object img-thumbnail"
                                  ng-src={{job.image}} alt="Uthappizza">
                                 </a>
-                                -->
                             </div>
+                            -->
                             <div class="media-body">
-                                <h2 class="media-heading">{{job.position}}
-                                 <span class="label label-danger">{{job.source}}</span>
-                                 <span class="badge">{{job.time | date}}</span></h2>
-                                 <p ng-bind-html="job.description | asHtml"></p>
+                                <h3 class="media-heading">{{job.company}}
+                                    <span class="label label-info">{{job.monthPosted}}</span>
+                                    <span class="badge">{{job.source}}</span>
+                                    <!--show different color using ng-class based on job.type-->
+                                    <span class="badge">{{job.type}}</span>
+                                    <span class="badge">{{job.time | date}}</span>
+                                </h3>
+                                <p ng-bind-html="job.description | asHtml"></p>
                             </div>
                         </li>
                     </ul>
