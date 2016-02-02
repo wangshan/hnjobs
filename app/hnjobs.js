@@ -30,16 +30,12 @@ var requestById = function(type, id, onEnd) {
     });
 }
 
-// TODO: filter based on current date?
-
 var parseWhosHiring = function(fileName, data, filter) {
     var re = new RegExp("Ask HN: Who is hiring.*" + filter, "gi");
     if (re.test(data.title)) {
-//        console.log("--\n", data, "--\n");
         data.kids.forEach(function(entry) {
             console.log("requesting item/" + entry);
             requestById("item/", entry, function(job) {
-                // TODO: need to parse job.text
 //                saveJobDetail(fileName, JSON.stringify(job, null, 4));
                 saveJobToDatabase(job);
             });

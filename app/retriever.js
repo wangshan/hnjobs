@@ -122,10 +122,10 @@ var retrieve = function() {
 retrieve();
 
 //var cronGetJob = new CronJob('*/30 * * * * *', function() {
-//    HnJobs.getJobs('../data/jobs2.txt');
+//    HnJobs.getJobs('../data/jobs.txt');
 //}, null, true);
 //
 //var cronWhoIsHiring = new CronJob('* * * */1 * *', function() {
-//    HnJobs.getWhoIsHiring('../data/whoishiring2.txt', dateText);
+//    retrieve();
 //}, null, true);
 
