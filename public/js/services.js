@@ -8,6 +8,12 @@ angular.module('confusionApp')
             };
         }])
 
+        .service('dateLabelsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+            this.getDateLabels = function() {
+                return $resource(baseURL + "datelabels/:id", null, {'update':{method: 'PUT'}}); 
+            };
+        }])
+
         .service('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
             this.getLeaders = function() {
                 return $resource(baseURL + "leadership/:id", null, {'update':{method: 'PUT'}}); 

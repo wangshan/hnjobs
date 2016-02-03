@@ -8,12 +8,23 @@ app.filter('asHtml', ['$sce', function($sce) {
     };
 }]);
 
-app.controller('HnJobsController', ['$scope', 'hnJobsFactory', function($scope, hnJobsFactory) {
+app.controller('HnJobsController',
+    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
     
     $scope.tab = 1;
     $scope.filtText = '';
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
+
+    $scope.datelabels = dateLabelsFactory.getDateLabels().query(
+        function(response) { // the response is the actual data
+            $scope.datelabels = response;
+        },
+        function(response) { // but here is the response object, why?
+            $scope.message = "Failed to get date labels\n"
+                + "Error: " + response.status + " " + response.statusText;
+        }
+        );
 
     $scope.jobs = hnJobsFactory.getHnJobs().query(
         function(response) { // the response is the actual data
@@ -21,24 +32,18 @@ app.controller('HnJobsController', ['$scope', 'hnJobsFactory', function($scope, 
             $scope.showHnJobs = true;
         },
         function(response) { // but here is the response object, why?
-            $scope.message = "Error: " + response.status + " " + response.statusText;
+            $scope.message = "Failed to get jobs\n"
+                + "Error: " + response.status + " " + response.statusText;
         }
         );
 
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        
-        if (setTab === 2) {
-            $scope.filtText = "January 2016";
-        }
-        else if (setTab === 3) {
-            $scope.filtText = "December 2015";
-        }
-        else if (setTab === 4) {
-            $scope.filtText = "November 2015";
+        if (setTab == 1) {
+            $scope.filtText = "";
         }
         else {
-            $scope.filtText = "";
+            $scope.filtText = getMonthYearText($scope.dateLabels[setTab].month);
         }
     };
 

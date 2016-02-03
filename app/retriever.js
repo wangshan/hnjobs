@@ -2,6 +2,7 @@ var HnJobs = require('./hnjobs');
 var DateLabel = require('./models/date_label');
 var CronJob = require('cron').CronJob;
 var _ = require('lodash');
+var MonthYear = require('./month_year');
 
 console.log("starting...");
 

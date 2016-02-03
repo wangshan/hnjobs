@@ -25,6 +25,18 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
+router.get('/:month', function(req, res, next) {
+    Job.find({month: req.params.month})
+    .sort('-month')
+    .exec(function(err, jobs) {
+        if (err) {
+            console.log("Can't find any jobs");
+            return next(err);
+        }
+        res.json(jobs);
+    });
+});
+
 router.post('/', function(req, res, err) {
     var newJob = new Job({
         id: req.body.id,
