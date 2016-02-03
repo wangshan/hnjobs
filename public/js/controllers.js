@@ -43,7 +43,7 @@ app.controller('HnJobsController',
             $scope.filtText = "";
         }
         else {
-            $scope.filtText = getMonthYearText($scope.dateLabels[setTab].month);
+            $scope.filtText = monthYear.getMonthYearText($scope.dateLabels[setTab-2].month);
         }
     };
 
