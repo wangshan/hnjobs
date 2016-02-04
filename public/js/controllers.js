@@ -41,10 +41,6 @@ app.controller('HnJobsController',
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
             $scope.dateLabels = response;
-//            console.log("controller, dateLabels.size=" + $scope.dateLabels.length);
-//            for (var i = 0; i < $scope.dateLabels.length; ++i) {
-//                console.log("controller, " + $scope.dateLabels[i].getMonth());
-//            }
         },
         function(response) { // but here is the response object
             $scope.message = "Failed to get date labels\n"
@@ -64,12 +60,12 @@ app.controller('HnJobsController',
         );
 
     $scope.filterByMonth = function(job) {
-        return $scope.filtMonth == null || $scope.filtMonth == job.monthPosted;
+        return $scope.filtMonth == null
+            || $scope.getMonthYearText($scope.filtMonth) == job.monthPosted;
     }
 
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        console.log("selected, $scope.tab="+$scope.tab);
         if (setTab == 1) {
             $scope.filtMonth = null;
         }
@@ -79,7 +75,6 @@ app.controller('HnJobsController',
     };
 
     $scope.isSelected = function (checkTab) {
-        console.log("isSelected, checkTab="+checkTab+", $scope.tab="+$scope.tab);
         return ($scope.tab === checkTab);
     };
 }])
