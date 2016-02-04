@@ -14,25 +14,17 @@
                     <a ng-click="select(1)"
                      aria-controls="All"
                      role="tab">All</a></li>
+
                     <li role="presentation"
-                     ng-class="{active: isSelected(2)}">
-                    <a ng-click="select(2)"
-                     aria-controls="January 2016"
-                     role="tab">January 2016</a></li>
-                    <li role="presentation"
-                     ng-class="{active: isSelected(3)}">
-                    <a ng-click="select(3)"
-                     aria-controls="December 2015"
-                     role="tab">December 2015</a></li>
-                    <li role="presentation"
-                     ng-class="{active: isSelected(4)}">
-                    <a ng-click="select(4)"
-                     aria-controls="November 2015"
-                     role="tab">November 2015</a></li>
+                     ng-repeat="dateLabel in dateLabels"
+                     ng-class="{active: isSelected($index + 2)}">
+                    <a ng-click="select($index + 2)"
+                     aria-controls="getMonthYearText(dateLabel)"
+                     role="tab">{{ getMonthYearText(dateLabel) }}</a></li>
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filtText">
+                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth">
                             <!--
                             <div class="media-left media-middle">
                                 <a ui-sref="app.jobdetails({id: job.id})">

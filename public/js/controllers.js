@@ -11,16 +11,42 @@ app.filter('asHtml', ['$sce', function($sce) {
 app.controller('HnJobsController',
     ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
     
+    // how to share these two functions between front and back end?
+
+    $scope.getMonthYearText = function(date) {
+        var getMonthName = function(date) {
+            var monthNames = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+            return monthNames[date.getMonth()];
+        }
+        return getMonthName(date) + " " + date.getFullYear();
+    }
+
     $scope.tab = 1;
-    $scope.filtText = '';
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
 
-    $scope.datelabels = dateLabelsFactory.getDateLabels().query(
+    $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
-            $scope.datelabels = response;
+            $scope.dateLabels = response;
+//            console.log("controller, dateLabels.size=" + $scope.dateLabels.length);
+//            for (var i = 0; i < $scope.dateLabels.length; ++i) {
+//                console.log("controller, " + $scope.dateLabels[i].getMonth());
+//            }
         },
-        function(response) { // but here is the response object, why?
+        function(response) { // but here is the response object
             $scope.message = "Failed to get date labels\n"
                 + "Error: " + response.status + " " + response.statusText;
         }
@@ -37,17 +63,23 @@ app.controller('HnJobsController',
         }
         );
 
+    $scope.filterByMonth = function(job) {
+        return $scope.filtMonth == null || $scope.filtMonth == job.monthPosted;
+    }
+
     $scope.select = function(setTab) {
         $scope.tab = setTab;
+        console.log("selected, $scope.tab="+$scope.tab);
         if (setTab == 1) {
-            $scope.filtText = "";
+            $scope.filtMonth = null;
         }
         else {
-            $scope.filtText = monthYear.getMonthYearText($scope.dateLabels[setTab-2].month);
+            $scope.filtMonth = $scope.dateLabels[setTab-2];
         }
     };
 
     $scope.isSelected = function (checkTab) {
+        console.log("isSelected, checkTab="+checkTab+", $scope.tab="+$scope.tab);
         return ($scope.tab === checkTab);
     };
 }])

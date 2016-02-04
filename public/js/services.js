@@ -9,8 +9,39 @@ angular.module('confusionApp')
         }])
 
         .service('dateLabelsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+            var parseResponseDates = function(response) {
+                // convert response.data to an array of Date
+                var dates = [];
+                var data = response.data;
+//                console.log("parseResponseDates, data.length=" + data.length);
+                var key;
+                var value;
+                for (key in data) {
+//                    console.log("parseResponseDates, raw=", data[key]);
+                    if (!data.hasOwnProperty(key) && // don't parse prototype or non-string props
+                        toString.call(data[key]) !== '[object String]') continue;
+                    value = Date.parse(data[key].month); // try to parse to date
+                    if (value !== NaN) {
+//                        console.log("parseResponseDates, parsed=", value);
+                        //data[key] = value;
+                        dates.push(new Date(value));
+                    }
+                }
+                return dates;
+            };
+
             this.getDateLabels = function() {
-                return $resource(baseURL + "datelabels/:id", null, {'update':{method: 'PUT'}}); 
+                return $resource(baseURL + "datelabels/:id", null, {
+                    'query': {
+                       method: 'GET',
+                       isArray: true,
+                       interceptor: {response: parseResponseDates}
+                    },
+                    'update': {
+                       method: 'PUT'
+                    }
+                }
+                );
             };
         }])
 
