@@ -15,28 +15,17 @@
         
         <div class="row row-content">
            <div class="col-xs-12">
-              <h3>Location Information</h3> 
+              <h3>Email Us</h3> 
            </div>
            <div class="col-xs-12 col-sm-4 col-sm-offset-1">
-                   <h5>Our Address</h5>
-                    <address style="font-size: 100%">
-		              121, Clear Water Bay Road<br>
-		              Clear Water Bay, Kowloon<br>
-		              HONG KONG<br>
-		              <i class="fa fa-phone"></i>: +852 1234 5678<br>
-		              <i class="fa fa-fax"></i>: +852 8765 4321<br>
-		              <i class="fa fa-envelope"></i>: 
-                        <a href="mailto:confusion@food.net">confusion@food.net</a>
-		           </address>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-sm-offset-1">
-                <h5>Map of our Location</h5>
+                <address style="font-size: 100%">
+                  <i class="fa fa-envelope"></i>: 
+                    <a href="mailto:base99ltd@gmail.com">base99ltd@gmail.com</a>
+               </address>
             </div>
             <div class="col-xs-12 col-sm-11 col-sm-offset-1">
                 <div class="btn-group" role="group" aria-label="...">
-                    <a type="button" class="btn btn-primary" href="tel:+85212345678"><i class="fa fa-phone"></i> Call</a>
-                    <a type="button" class="btn btn-info"><i class="fa fa-skype"></i> Skype</a>
-                    <a type="button" class="btn btn-success" href="mailto:confusion@food.net"><i class="fa fa-envelope-o"></i> Email</a>
+                    <a type="button" class="btn btn-success" href="mailto:base99ltd@gmail.com"><i class="fa fa-envelope-o"></i> Email</a>
                 </div>
             </div>
         </div>
@@ -70,21 +59,6 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="telnum" class="col-sm-2 control-label">Contact Tel.</label>
-                        <div class="col-xs-5 col-sm-4 col-md-3">
-                            <div class="input-group">
-                                <div class="input-group-addon">(</div>
-                                    <input type="tel" class="form-control" id="areacode" name="areacode" placeholder="Area code"
-                                    ng-model="feedback.tel.areaCode">
-                                <div class="input-group-addon">)</div>
-                            </div>
-                        </div>
-                        <div class="col-xs-7 col-sm-6 col-md-7">
-                            <input type="tel" class="form-control" id="telnum" name="telnum" placeholder="Tel. number"
-                            ng-model="feedback.tel.number">
-                        </div>
-                    </div>
                     <div class="form-group" ng-class="{ 'has-error has-feedback' : feedbackForm.emailid.$invalid && !feedbackForm.emailid.$pristine }">
                         <label for="emailid" class="col-sm-2 control-label">Email</label>
                         <div class="col-sm-10">
@@ -110,14 +84,6 @@
                                 <strong>May we contact you?</strong>
                             </label>
                         </div>
-                        <div class="col-sm-3 col-sm-offset-1" ng-show="feedback.agree">
-                            <select class="form-control"
-                                ng-model="feedback.mychannel"
-                                ng-options="channel.value as channel.label for channel in channels">
-                                <option value="">Tel. or Email?</option>
-                            </select>
-                            <span ng-show="invalidChannelSelection" class="help-block">Select an option.</span>
-                        </div>
                     </div>                    
                     <div class="form-group">
                         <label for="feedback" class="col-sm-2 control-label">Your Feedback</label>
@@ -138,9 +104,8 @@
                 <p style="padding:20px;"></p>
                 <h3>Your Current Feedback:</h3>
                 <p>{{feedback.firstName}} {{feedback.lastName | uppercase}}</p>
-                <p>Contact Tel.: ({{feedback.tel.areaCode}}) {{feedback.tel.number}}</p>
                 <p>Contact Email: {{feedback.email}}</p>
-                <p ng-show="feedback.agree">Contact by: {{feedback.mychannel}}</p>
+                <p ng-show="feedback.agree">Contact by: {{feedback.email}}</p>
                 <p>Comments: {{feedback.comments}}</p>
             </div>
        </div>
