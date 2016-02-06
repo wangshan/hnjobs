@@ -7,8 +7,8 @@ var Job = db.model('Job', {
     description: { type: String, required: false },
     url: { type: String, required: false },
     source: { type: String, required: true, default: "HackerNews" },
-    monthPosted: { type: String, required: true, default: "January 2016" },
-    type: { type: String, required: false },
+    monthPosted: { type: String, required: true },
+    type: { type: String, required: false }, // fulltime, partime, freelance
     where: { type: String, required: false },
 });
 

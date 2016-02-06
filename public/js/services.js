@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('confusionApp')
+angular.module('startupJobsApp')
         .constant("baseURL", "http://localhost:3000/api/")
         .service('hnJobsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
             this.getHnJobs = function() {

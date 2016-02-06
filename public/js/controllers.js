@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('confusionApp');
+var app = angular.module('startupJobsApp');
 
 app.filter('asHtml', ['$sce', function($sce) {
     return function(raw) {

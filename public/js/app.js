@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('confusionApp', ['ui.router', 'ngResource'])
+angular.module('startupJobsApp', ['ui.router', 'ngResource'])
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
         .state('app', {
