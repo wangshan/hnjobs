@@ -45,7 +45,7 @@ var getPrevMonthYear = function(date) {
     return prevDate;
 }
 
-var saveNewDateLabel = function(dateLabels, datesToRequest, newDate) {
+var saveNewDateLabel = function(dateLabels, newDate) {
     console.log("saveNewDateLabel, newDate=", newDate);
     var newDateLabel = new DateLabel({
         month: newDate,
@@ -60,7 +60,6 @@ var saveNewDateLabel = function(dateLabels, datesToRequest, newDate) {
             }
             else {
                 dateLabels.push(newDateLabel);
-                datesToRequest.push(newDateLabel.month);
 
                 // kick out the oldest if new one has been added
                 // NOTE: whoishiring for the new month may have not been posted
@@ -71,14 +70,17 @@ var saveNewDateLabel = function(dateLabels, datesToRequest, newDate) {
                 }
                 else if (dateLabels.length < 4) {
                     var prevDate = getPrevMonthYear(newDateLabel.month);
-                    saveNewDateLabel(dateLabels, datesToRequest, prevDate);
+                    saveNewDateLabel(dateLabels, prevDate);
                 }
             }
+
+            // will still get the posts even datelabels failed to save
+            console.log("Getting " + newDate);
+            HnJobs.getWhoIsHiring('../data/whoishiring.txt', getMonthYearText(newDate));
         });
 }
 
 var retrieve = function() {
-    var datesToRequest = [];
     var now = new Date();
     var dateText = getMonthYearText(now);
     var newDate = new Date(dateText);
@@ -86,8 +88,8 @@ var retrieve = function() {
         .sort("-month")
         .exec(function(err, dateLabels) {
             if (err) {
-                console.log("Failed to find date labels");
-                datesToRequest.push(newDate);
+                // still try to get new posts even datalabel fetch failed
+                console.log("Failed to find date labels, will not refresh jobs");
             }
             else {
                 var latestIndex = _.findIndex(dateLabels, function(o) {
@@ -95,14 +97,15 @@ var retrieve = function() {
                 });
 
                 if (latestIndex == -1) {
-                    saveNewDateLabel(dateLabels, datesToRequest, newDate);
+                    console.log("lastestIndex==-1, new date appeared");
+                    saveNewDateLabel(dateLabels, newDate);
                 }
                 else if (latestIndex == 0) {
+                    console.log("lastestIndex==0, current date is the latest");
                     // should only happen during developing
-                    datesToRequest.push(newDate);
                     if (dateLabels.length < 4) {
                         var prevDate = getPrevMonthYear(newDate);
-                        saveNewDateLabel(dateLabels, datesToRequest, prevDate);
+                        saveNewDateLabel(dateLabels, prevDate);
                     }
                 }
                 else {
@@ -112,11 +115,6 @@ var retrieve = function() {
                             + dateLabels[latestIndex].month);
                 }
             }
-
-            _.forEach(datesToRequest, function(d) {
-                console.log("...to request " + getMonthYearText(d));
-                HnJobs.getWhoIsHiring('../data/whoishiring.txt', getMonthYearText(d));
-            });
         });
 }
 

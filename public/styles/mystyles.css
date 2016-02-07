@@ -70,6 +70,12 @@
   background-color: #303f9f;
   color: #eeeeee;
 }
+.copyright-debug {
+  vertical-align: middle;
+  display: table-cell;
+  border: 1px solid red;
+  float: none;
+}
 address {
   color: #0f0f0f;
   font-size: 80%;

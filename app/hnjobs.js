@@ -37,7 +37,7 @@ var parseWhosHiring = function(fileName, data, filter) {
             console.log("requesting item/" + entry);
             requestById("item/", entry, function(job) {
 //                saveJobDetail(fileName, JSON.stringify(job, null, 4));
-                saveJobToDatabase(job);
+                saveJobToDatabase(job, filter);
             });
         });
     }
@@ -71,7 +71,7 @@ String.prototype.decodeHTML = function() {
     });
 };
 
-var saveJobToDatabase = function(job) {
+var saveJobToDatabase = function(job, monthPosted) {
     // don't show if the text is too short and there's no title
     if ((!job.text || job.text.length < 16) && !job.title) {
         return;
@@ -102,7 +102,9 @@ var saveJobToDatabase = function(job) {
             position: job.title,
             description: job.text,
             url: job.url,
+            monthPosted: monthPosted,
             type: jobType,
+            where: ""
         });
 
         // only save if job.id is not present
@@ -151,7 +153,7 @@ var saveJobToDatabase = function(job) {
 
 var getJobs = function(fileName) {
     return requestById("", "jobstories", function(jobIds) {
-        console.log(jobIds);
+        //console.log(jobIds);
         jobIds.forEach(function(jobId) {
             requestById("item/", jobId, function(job) {
                 saveJobToDatabase(job);
@@ -164,7 +166,7 @@ var getWhoIsHiring = function(fileName, filter) {
     return requestById("user/", "whoishiring", function(whoishiring) {
         var postIds = whoishiring.submitted;
         postIds.forEach(function(id) {
-            console.log("id: ", id);
+            //console.log("id: ", id);
             requestById("item/", id, function(data) {
                 parseWhosHiring(fileName, data, filter);
             });
