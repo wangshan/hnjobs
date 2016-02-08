@@ -6,3 +6,5 @@ temp
 tmp
 .DS_Store
 data
+node_modules
+bower_components

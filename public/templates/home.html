@@ -1,4 +1,11 @@
 
+    <a href="https://github.com/you">
+        <img style="position: absolute; top: 20; right: 0; border: 0;"
+        class="hidden-xs"
+        src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
+        alt="Fork me on GitHub"
+        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
+    </a>
     <div class="container">
         <div class="row row-content" ng-controller="HnJobsController">
             <!-- only show this div is !showHnJobs is true, otherwise remove this
@@ -7,6 +14,9 @@
                 <h3>{{message}}</h3>
             </div>
             <div class="col-xs-12" ng-if="showHnJobs">
+                <label class="col-xs-12 col-sm-push-8 col-md-push-8">
+                    Search: <input ng-model="searchText">
+                </label>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
                      ng-class="{active: isSelected(1)}">
@@ -22,7 +32,7 @@
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth">
+                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | filter: searchText">
                             <!--
                             <div class="media-left media-middle">
                                 <a ui-sref="app.jobdetails({id: job.id})">
