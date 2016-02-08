@@ -1,7 +1,13 @@
-# hnjobs
+hnjobs
+========
+
 Web app for displaying jobs from hackernews
 
-Install
+## Installation
 
-npm install
-bower install
+`npm install`
+
+`bower install`
+
+
+## Usage
