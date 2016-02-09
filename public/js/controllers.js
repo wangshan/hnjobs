@@ -10,10 +10,16 @@ app.filter('asHtml', ['$sce', function($sce) {
 
 app.filter('regex', function() {
     return function(input, field, regexText) {
+        if (!regexText) {
+            return input;
+        }
+
         var pattern = new RegExp(regexText, 'ig');
         var output = [];
         for (var i = 0; i < input.length; ++i) {
             if (pattern.test(input[i][field])) {
+                //TODO: highlight matched text
+                //input[i][field] = input[i][field].replace(pattern, '<span class="highlightedText">$&</span>');
                 output.push(input[i]);
             }
         }

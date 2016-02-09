@@ -100,3 +100,6 @@ body {
   position: absolute;
   right: 0px;
 }
+.hightlightedText {
+  background: yellow;
+}
