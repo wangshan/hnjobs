@@ -15,7 +15,7 @@
             </div>
             <div class="col-xs-12" ng-if="showHnJobs">
                 <label class="col-xs-12 col-sm-push-8 col-md-push-8">
-                    Search: <input ng-model="searchText">
+                    Search: <input ng-model="searchPattern">
                 </label>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
@@ -32,7 +32,7 @@
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | filter: searchText">
+                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | regex: 'description': searchPattern">
                             <!--
                             <div class="media-left media-middle">
                                 <a ui-sref="app.jobdetails({id: job.id})">

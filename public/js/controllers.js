@@ -8,6 +8,19 @@ app.filter('asHtml', ['$sce', function($sce) {
     };
 }]);
 
+app.filter('regex', function() {
+    return function(input, field, regexText) {
+        var pattern = new RegExp(regexText, 'ig');
+        var output = [];
+        for (var i = 0; i < input.length; ++i) {
+            if (pattern.test(input[i][field])) {
+                output.push(input[i]);
+            }
+        }
+        return output;
+    };
+});
+
 app.controller('HnJobsController',
     ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
     
