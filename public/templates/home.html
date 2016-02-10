@@ -33,14 +33,6 @@
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
                         <li class="media" ng-repeat="job in jobs | filter: filterByMonth | regex: 'description': searchPattern">
-                            <!--
-                            <div class="media-left media-middle">
-                                <a ui-sref="app.jobdetails({id: job.id})">
-                                <img class="media-object img-thumbnail"
-                                 ng-src={{job.image}} alt="Uthappizza">
-                                </a>
-                            </div>
-                            -->
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
                                     <span class="label label-info">{{job.monthPosted}}</span>
@@ -48,6 +40,19 @@
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{job.type}}</span>
                                     <span class="badge">{{job.time | date}}</span>
+                                    <span><button type="button" class="btn-sm btn-primary pull-right"
+                                            data-toggle="modal" data-target="#shareModal"
+                                            ng-click="shareJob(job)">Share</button>
+                                    </span>
+                                    <!--
+                                    <span><a type="button"
+                                            class="btn btn-success" href="mailto:base99ltd@gmail.com">
+                                            <i class="fa fa-envelope-o"></i> Email</a>
+                                    </span>
+                                    -->
+                                    <span class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                                        <a class="addthis_button_email"></a>
+                                    </span>
                                 </h3>
                                 <p ng-bind-html="job.description | asHtml"></p>
                             </div>
@@ -55,5 +60,36 @@
                     </ul>
                 </div>
             </div>
+
+            <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="Share This Job">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Share This Job</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row row-content">
+                                <p ng-bind-html="share.jobContent | asHtml"></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <!--
+                            <div class="col-xs-6 col-sm-4 col-md-4
+                                addthis_sharing_toolbox">
+                            </div>
+                            -->
+                            <div><a type="button"
+                                    class="btn btn-success"
+                                    ng-click="sendEmail()">
+                                    <i class="fa fa-envelope-o"></i> Send</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+

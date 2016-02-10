@@ -18,8 +18,9 @@ app.filter('regex', function() {
         var output = [];
         for (var i = 0; i < input.length; ++i) {
             if (pattern.test(input[i][field])) {
-                //TODO: highlight matched text
-                //input[i][field] = input[i][field].replace(pattern, '<span class="highlightedText">$&</span>');
+                //TODO: highlight matched text, replace is really slow
+                //var replaced = input[i][field].replace(pattern, '<span class="highlightedText">$&</span>');
+                //input[i][field] = replaced;
                 output.push(input[i]);
             }
         }
@@ -93,8 +94,22 @@ app.controller('HnJobsController',
         }
     };
 
-    $scope.isSelected = function (checkTab) {
+    $scope.isSelected = function(checkTab) {
         return ($scope.tab === checkTab);
+    };
+
+    $scope.shareJob = function(job) {
+        console.log(job.id);
+        $scope.share.jobContent = job.description;
+    };
+
+    $scope.sendEmail = function() {
+        console.log($scope.share.jobContent);
+        var link = "mailto:"+ $scope.share.email
+             + "?subject= " + escape($scope.share.subject)
+             + "&body=" + escape($scope.share.jobContent); 
+
+        window.location.href = link;
     };
 }])
 
