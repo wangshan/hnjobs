@@ -40,19 +40,22 @@
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{job.type}}</span>
                                     <span class="badge">{{job.time | date}}</span>
+                                    <!--
                                     <span><button type="button" class="btn-sm btn-primary pull-right"
                                             data-toggle="modal" data-target="#shareModal"
                                             ng-click="shareJob(job)">Share</button>
                                     </span>
-                                    <!--
+                                    -->
                                     <span><a type="button"
-                                            class="btn btn-success" href="mailto:base99ltd@gmail.com">
+                                            class="btn btn-success"
+                                            ng-click="shareJob(job)">
                                             <i class="fa fa-envelope-o"></i> Email</a>
                                     </span>
-                                    -->
+                                    <!--
                                     <span class="addthis_toolbox addthis_default_style addthis_32x32_style">
                                         <a class="addthis_button_email"></a>
                                     </span>
+                                    -->
                                 </h3>
                                 <p ng-bind-html="job.description | asHtml"></p>
                             </div>

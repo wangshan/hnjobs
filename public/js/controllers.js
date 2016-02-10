@@ -29,7 +29,7 @@ app.filter('regex', function() {
 });
 
 app.controller('HnJobsController',
-    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
+    ['$scope', '$location', 'hnJobsFactory', 'dateLabelsFactory', function($scope, $location, hnJobsFactory, dateLabelsFactory) {
     
     // how to share these two functions between front and back end?
 
@@ -98,16 +98,33 @@ app.controller('HnJobsController',
         return ($scope.tab === checkTab);
     };
 
+    $scope.share = {
+        id: "",
+        jobContent: "",
+        email: "",
+        subject: "",
+    };
+
     $scope.shareJob = function(job) {
         console.log(job.id);
+        $scope.share.jobId = job.id;
         $scope.share.jobContent = job.description;
+        $scope.sendEmail();
     };
 
     $scope.sendEmail = function() {
         console.log($scope.share.jobContent);
         var link = "mailto:"+ $scope.share.email
              + "?subject= " + escape($scope.share.subject)
-             + "&body=" + escape($scope.share.jobContent); 
+             + "&body=" + encodeURIComponent($location.absUrl() + $scope.share.jobId);
+             // FIXME: client can't click to get this DOM, at least I don't know how
+             // maybe it's better to save each job in its own template and serve the page when clients want
+             //
+             // or save the template in a modal, in this case addthis_share_button makes sense
+             // but what would client see then they click via email or other shared link? would the modal pop up automatically?
+             //
+             // FIXME: can't send html in mailto body, so this won't work!
+             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.jobContent));
 
         window.location.href = link;
     };
