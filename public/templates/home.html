@@ -1,5 +1,5 @@
 
-    <a href="https://github.com/you">
+    <a href="https://github.com/wangshan/hnjobs">
         <img style="position: absolute; top: 20; right: 0; border: 0;"
         class="hidden-xs"
         src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
@@ -14,9 +14,20 @@
                 <h3>{{message}}</h3>
             </div>
             <div class="col-xs-12" ng-if="showHnJobs">
-                <label class="col-xs-12 col-sm-push-8 col-md-push-8">
-                    Search: <input ng-model="searchPattern">
-                </label>
+                <div class="form-horizontal col-xs-12">
+                    <div class="form-group">
+                        <label for="searchInput" class="control-label col-xs-12 col-sm-1 pull-left">
+                            Search
+                        </label>
+                        <div class="col-xs-12 col-sm-11 pull-left">
+                            <input type="text"
+                                class="form-control"
+                                id="searchInput"
+                                placeholder="type word or regex..." 
+                                ng-model="search.searchPattern">
+                        </div>
+                    </div>
+                </div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
                      ng-class="{active: isSelected(1)}">
@@ -32,7 +43,7 @@
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | regex: 'description': searchPattern">
+                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | regex: 'description': search.searchPattern">
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
                                     <span class="label label-info">{{job.monthPosted}}</span>
@@ -40,20 +51,16 @@
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{job.type}}</span>
                                     <span class="badge">{{job.time | date}}</span>
+                                    <span class="pull-right">
+                                        <a type="button" class="btn btn-primary"
+                                            ui-sref="app.jobdetails({id: job.id})"
+                                            ng-click="shareJob(job)">Share
+                                        </a>
+                                    </span>
                                     <!--
                                     <span><button type="button" class="btn-sm btn-primary pull-right"
                                             data-toggle="modal" data-target="#shareModal"
                                             ng-click="shareJob(job)">Share</button>
-                                    </span>
-                                    -->
-                                    <span><a type="button"
-                                            class="btn btn-success"
-                                            ng-click="shareJob(job)">
-                                            <i class="fa fa-envelope-o"></i> Email</a>
-                                    </span>
-                                    <!--
-                                    <span class="addthis_toolbox addthis_default_style addthis_32x32_style">
-                                        <a class="addthis_button_email"></a>
                                     </span>
                                     -->
                                 </h3>
@@ -64,6 +71,7 @@
                 </div>
             </div>
 
+            <!-- TODO: modify to represent aboutus and contactus -->
             <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="Share This Job">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">

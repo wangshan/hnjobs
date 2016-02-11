@@ -14,14 +14,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-    Job.find({id: req.params.id})
-    .sort('-time')
-    .exec(function(err, jobs) {
+    Job.findOne({id: req.params.id}, function(err, job) {
         if (err) {
-            console.log("Can't find any jobs");
+            console.log("Can't find any job with id " + req.params.id);
             return next(err);
         }
-        res.json(jobs);
+        res.json(job);
     });
 });
 

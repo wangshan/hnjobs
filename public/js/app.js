@@ -1,7 +1,13 @@
 'use strict';
 
-angular.module('startupJobsApp', ['ui.router', 'ngResource'])
-    .config(function($stateProvider, $urlRouterProvider) {
+var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
+
+// add this to avoid # in the url, also need to add <base href='/'> in html
+//    app.config(["$locationProvider", function($locationProvider) {
+//      $locationProvider.html5Mode(true);
+//    }]);
+
+    app.config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
         .state('app', {
             url: '/',
@@ -36,26 +42,15 @@ angular.module('startupJobsApp', ['ui.router', 'ngResource'])
                 }
             }
         })
-        /*
-        .state('app.menu', {
-            url: 'menu',
+        .state('app.jobdetails', {
+            url: ':id',
             views: {
                 'content@': {
-                    templateUrl : 'static/templates/menu.html',
-                    controller  : 'HnJobsController'
-                }
-            }
-        })
-        .state('app.dishdetails', {
-            url: 'menu/:id',
-            views: {
-                'content@': {
-                    templateUrl : 'static/templates/dishdetail.html',
-                    controller  : 'DishDetailController'
+                    templateUrl : 'static/templates/jobdetails.html',
+                    controller  : 'JobDetailsController'
                }
             }
         });
-        */
 
         $urlRouterProvider.otherwise('/');
     })

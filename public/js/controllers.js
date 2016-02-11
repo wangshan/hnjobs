@@ -29,7 +29,7 @@ app.filter('regex', function() {
 });
 
 app.controller('HnJobsController',
-    ['$scope', '$location', 'hnJobsFactory', 'dateLabelsFactory', function($scope, $location, hnJobsFactory, dateLabelsFactory) {
+    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
     
     // how to share these two functions between front and back end?
 
@@ -57,6 +57,7 @@ app.controller('HnJobsController',
     $scope.tab = 1;
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
+    $scope.search = {};
 
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
@@ -99,35 +100,18 @@ app.controller('HnJobsController',
     };
 
     $scope.share = {
-        id: "",
+        jobId: "",
         jobContent: "",
         email: "",
         subject: "",
     };
 
     $scope.shareJob = function(job) {
-        console.log(job.id);
         $scope.share.jobId = job.id;
         $scope.share.jobContent = job.description;
-        $scope.sendEmail();
+        console.log(job.id);
     };
 
-    $scope.sendEmail = function() {
-        console.log($scope.share.jobContent);
-        var link = "mailto:"+ $scope.share.email
-             + "?subject= " + escape($scope.share.subject)
-             + "&body=" + encodeURIComponent($location.absUrl() + $scope.share.jobId);
-             // FIXME: client can't click to get this DOM, at least I don't know how
-             // maybe it's better to save each job in its own template and serve the page when clients want
-             //
-             // or save the template in a modal, in this case addthis_share_button makes sense
-             // but what would client see then they click via email or other shared link? would the modal pop up automatically?
-             //
-             // FIXME: can't send html in mailto body, so this won't work!
-             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.jobContent));
-
-        window.location.href = link;
-    };
 }])
 
 .controller('ContactController', ['$scope', function($scope) {
@@ -161,6 +145,41 @@ app.controller('HnJobsController',
             $scope.feedbackForm.$setPristine();
             console.log($scope.feedback);
         }
+    };
+}])
+
+.controller('JobDetailsController',
+    ['$scope', '$stateParams', '$location', 'hnJobsFactory', function($scope, $stateParams, $location, hnJobsFactory) {
+
+    $scope.showJobDetails = false;
+    $scope.share = {
+        jobId: "",
+        email: "",
+        jobContent: "",
+        subject: "",
+    };
+
+    hnJobsFactory.getHnJobs().get({id: parseInt($stateParams.id, 10)})
+    .$promise.then(
+        function(response) { // the response is the actual data
+            $scope.share.jobContent = response.description;
+            $scope.showJobDetails = true;
+        },
+        function(response) { // but here is the response object, why?
+            $scope.message = "Failed to get jobs\n"
+                + "Error: " + response.status + " " + response.statusText;
+        }
+    );
+
+    $scope.sendEmail = function() {
+        console.log($scope.share.jobContent);
+        var link = "mailto:"+ $scope.share.email
+             + "?subject= " + escape($scope.share.subject)
+             + "&body=" + encodeURIComponent($location.absUrl());
+             // FIXME: can't send html in mailto body, so this won't work!
+             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.jobContent));
+
+        window.location.href = link;
     };
 }])
 

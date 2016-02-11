@@ -100,6 +100,11 @@ body {
   position: absolute;
   right: 0px;
 }
-.highlightedText {
+.highlighted-text {
   background: yellow;
+}
+.header-element {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 20px;
 }

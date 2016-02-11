@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12">
+            <div class="media">
+                <button class="btn btn-primary pull-right"
+                    type="button" ui-sref="app">
+                    Back
+                </button>
+                <h4 >Share This Job</h4>
+                <!-- Go to www.addthis.com/dashboard to customize your tools -->
+                <div class="addthis_sharing_toolbox"></div>
+                <p ng-bind-html="share.jobContent | asHtml"></p>
+                <div><a type="button"
+                        class="btn btn-success"
+                        ng-click="sendEmail()">
+                        <i class="fa fa-envelope-o"></i> Send</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
