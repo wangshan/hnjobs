@@ -24,11 +24,11 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.get('/:month', function(req, res, next) {
-    Job.find({month: req.params.month})
-    .sort('-month')
+    Job.find({monthPosted: req.params.month})
+    .sort('-monthPosted')
     .exec(function(err, jobs) {
         if (err) {
-            console.log("Can't find any jobs");
+            console.log("Can't find any jobs in month " + req.params.monthPosted);
             return next(err);
         }
         res.json(jobs);
