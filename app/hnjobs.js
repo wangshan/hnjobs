@@ -34,11 +34,10 @@ var requestById = function(type, id, onEnd) {
 var topics = [
     //{ title: "hiring"     , text: "Ask HN: Who is hiring.*" }                 ,
     { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" }         ,
-    //{ title: "freelance"  , text: "Ask HN: Freelancer? Seeking freelancer.*" },
+    { title: "freelance"  , text: "Ask HN: Freelancer? Seeking freelancer.*" },
     ];
 
 var parseWhosHiring = function(fileName, data, filter) {
-    // TODO: need to parse Candidate datum differently, saveJobToDatabase need to understand what is being requested
     topics.forEach(function(topic) {
         var re = new RegExp(topic.text + filter, "gi");
         if (re.test(data.title)) {
@@ -87,16 +86,36 @@ var savePostToDatabase = function(post, topic, monthPosted) {
         saveJobToDatabase(post, monthPosted)
     }
     else if (topic == "wantshired") {
-        console.log("wantshired");
         saveCandidateToDatabase(post, monthPosted)
     }
     else if (topic == "freelance") {
         console.log("freelance");
+        var seekingFreelancerRe = /SEEKING FREELANCER/gi;
+        var seekingWorkRe = /SEEKING WORK/gi;
+        if (seekingFreelancerRe.test(post.text)) {
+            saveJobToDatabase(post, monthPosted)
+        }
+        else if (seekingWorkRe.test(post.text)) {
+            saveCandidateToDatabase(post, monthPosted)
+        }
+        else {
+            console.log("freelance, post doesn't say what's seeking");
+        }
     }
 }
 
 var saveCandidateToDatabase = function(candidate, monthPosted) {
     console.log("saveCandidateToDatabase, ", candidate);
+
+    var parttimeRe = /part[\ \-]?time/gi;
+    var freelanceRe = /free[\ \-]?lanc/gi;
+    var jobType = "Full Time";
+    if (parttimeRe.test(candidate.text)) {
+        jobType = "Part Time";
+    }
+    else if (freelanceRe.test(candidate.text)) {
+        jobType = "/".join(jobType, "Freelance");
+    }
 
     var candidateDatum = new CandidateDatum({
         id: candidate.id,
@@ -136,11 +155,14 @@ var saveJobToDatabase = function(job, monthPosted) {
             job.text = job.title;
         }
 
-        // TODO: search for freelance, seeking work, seeking freelancer 
         var jobType = "Full Time";
         var jobTypeRe = /part[\ \-]?time/gi;
         if (jobTypeRe.test(job.text)) {
             jobType = "Part Time";
+        }
+        var freelanceRe = /free[\ \-]?lanc/gi;
+        if (freelanceRe.test(candidate.text)) {
+            jobType = "/".join(jobType, "Freelance");
         }
 
         var remoteRe = /REMOTE/gi;

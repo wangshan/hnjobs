@@ -16,16 +16,40 @@
             <div class="col-xs-12" ng-if="showHnJobs">
                 <div class="form-horizontal col-xs-12">
                     <div class="form-group">
-                        <label for="searchInput" class="control-label col-xs-12 col-sm-1 pull-left">
-                            Search
-                        </label>
-                        <div class="col-xs-12 col-sm-11 pull-left">
-                            <input type="text"
-                                class="form-control"
-                                id="searchInput"
-                                placeholder="type word or regex..." 
-                                ng-model="search.searchPattern">
-                        </div>
+                        <!--<form class="form-search form-inline">-->
+                        <form class="form-search">
+                            <div class="input-group">
+                                <input type="text"
+                                    class="form-control search-query"
+                                    placeholder="word or regex..."
+                                    ng-model="search.searchPattern"/>
+                                <span class="input-group-btn">
+                                    <button type="submit"
+                                        class="btn btn-primary"> Search
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                        <br>
+                        <form class="dropdown">
+                            <button class="btn btn-danger dropdown-toggle"
+                                type="button"
+                                id="month"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="true">
+                                Month Posted
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="month">
+                                <li ng-repeat="dateLabel in dateLabels">
+                                    <a href="#">{{ getMonthYearText(dateLabel) }}</a>
+                                </li>
+                                <li>
+                                    <a href="#" aria-controls="All">All</a>
+                                </li>
+                            </ul>
+                        </form>
                     </div>
                 </div>
                 <ul class="nav nav-tabs" role="tablist">

@@ -7,6 +7,7 @@ var Candidate = db.model('Candidate', {
     time:           { type: Number,     required: true },
     source:         { type: String,     required: true, default: "HackerNews" },
     monthPosted:    { type: String,     required: true },
+    jobType:        { type: String,     required: true, default: "Full Time" },
     description:    { type: String,     required: false },
 });
 
