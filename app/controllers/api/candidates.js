@@ -23,10 +23,9 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
-router.get('/:month', function(req, res, next) {
-    Candidate.find({monthPosted: req.params.month})
-    .sort('-monthPosted')
-    .exec(function(err, candidates) {
+router.get('/months/:month', function(req, res, next) {
+    var month = decodeURI(req.params.month);
+    Candidate.find({monthPosted: month}, function(err, candidates) {
         if (err) {
             console.log("Can't find any candidates in month " + req.params.monthPosted);
             return next(err);

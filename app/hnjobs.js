@@ -1,6 +1,7 @@
 var https = require("https");
 var fs = require("fs");
 var JobDatum = require('./models/job');
+var CandidateDatum = require('./models/candidate');
 
 var requestById = function(type, id, onEnd) {
     var options = {
@@ -30,17 +31,26 @@ var requestById = function(type, id, onEnd) {
     });
 }
 
+var topics = [
+    //{ title: "hiring"     , text: "Ask HN: Who is hiring.*" }                 ,
+    { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" }         ,
+    //{ title: "freelance"  , text: "Ask HN: Freelancer? Seeking freelancer.*" },
+    ];
+
 var parseWhosHiring = function(fileName, data, filter) {
-    var re = new RegExp("Ask HN: Who is hiring.*" + filter, "gi");
-    if (re.test(data.title)) {
-        data.kids.forEach(function(entry) {
-            console.log("requesting item/" + entry);
-            requestById("item/", entry, function(job) {
-//                saveJobDetail(fileName, JSON.stringify(job, null, 4));
-                saveJobToDatabase(job, filter);
+    // TODO: need to parse Candidate datum differently, saveJobToDatabase need to understand what is being requested
+    topics.forEach(function(topic) {
+        var re = new RegExp(topic.text + filter, "gi");
+        if (re.test(data.title)) {
+            data.kids.forEach(function(entry) {
+                console.log("requesting item/" + entry);
+                requestById("item/", entry, function(post) {
+                    savePostToDatabase(post, topic.title, filter);
+                });
             });
-        });
-    }
+        }
+
+    })
 }
 
 // for debugging only
@@ -71,6 +81,43 @@ String.prototype.decodeHTML = function() {
     });
 };
 
+
+var savePostToDatabase = function(post, topic, monthPosted) {
+    if (topic == "hiring") {
+        saveJobToDatabase(post, monthPosted)
+    }
+    else if (topic == "wantshired") {
+        console.log("wantshired");
+        saveCandidateToDatabase(post, monthPosted)
+    }
+    else if (topic == "freelance") {
+        console.log("freelance");
+    }
+}
+
+var saveCandidateToDatabase = function(candidate, monthPosted) {
+    console.log("saveCandidateToDatabase, ", candidate);
+
+    var candidateDatum = new CandidateDatum({
+        id: candidate.id,
+        time: candidate.time * 1000,
+        monthPosted: monthPosted,
+        description: candidate.text,
+    });
+
+    // only save if candidate.id is not present
+    CandidateDatum.update(
+            { id: candidateDatum.id },
+            { $setOnInsert: candidateDatum },
+            { upsert: true },
+            function(err, numAffected) {
+                if (err) {
+                    console.log("Failed to save a new candidate");
+                }
+            }
+            );
+}
+
 var saveJobToDatabase = function(job, monthPosted) {
     // don't show if the text is too short and there's no title
     if ((!job.text || job.text.length < 16) && !job.title) {
@@ -89,11 +136,18 @@ var saveJobToDatabase = function(job, monthPosted) {
             job.text = job.title;
         }
 
+        // TODO: search for freelance, seeking work, seeking freelancer 
         var jobType = "Full Time";
         var jobTypeRe = /part[\ \-]?time/gi;
         if (jobTypeRe.test(job.text)) {
             jobType = "Part Time";
         }
+
+        var remoteRe = /REMOTE/gi;
+        var remote = remoteRe.test(job.text);
+
+        var onsiteRe = /ONSITE/gi;
+        var onsite = onsiteRe.test(job.text);
 
         var jobDatum = new JobDatum({
             id: job.id,
@@ -104,7 +158,9 @@ var saveJobToDatabase = function(job, monthPosted) {
             url: job.url,
             monthPosted: monthPosted,
             type: jobType,
-            where: ""
+            where: "",
+            remote: remote,
+            onsite: onsite,
         });
 
         // only save if job.id is not present

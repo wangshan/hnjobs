@@ -69,6 +69,13 @@ var saveNewDateLabel = function(dateLabels, newDate) {
                     dateLabels.shift();
                 }
                 else if (dateLabels.length < 4) {
+                    // FIXME: if there are >= 4 date labels, even the actual
+                    // data is empty, we still only request the latest month,
+                    // maybe I should try
+                    // 1) check data by month and request if that
+                    // month is empty
+                    // 2) add a force flag and pass from command line, I think
+                    // this is a better solution
                     var prevDate = getPrevMonthYear(newDateLabel.month);
                     saveNewDateLabel(dateLabels, prevDate);
                 }

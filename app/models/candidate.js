@@ -7,12 +7,6 @@ var Candidate = db.model('Candidate', {
     time:           { type: Number,     required: true },
     source:         { type: String,     required: true, default: "HackerNews" },
     monthPosted:    { type: String,     required: true },
-    where:          { type: String,     required: true },
-    remote:         { type: Boolean,    required: true, default: false },
-    willRelocate:   { type: Boolean,    required: true, default: false },
-    technologies:   { type: String,     required: true },
-    cv:             { type: String,     required: true },
-    email:          { type: String,     required: true },
     description:    { type: String,     required: false },
 });
 
