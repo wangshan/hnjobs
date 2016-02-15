@@ -107,16 +107,6 @@ var savePostToDatabase = function(post, topic, monthPosted) {
 var saveCandidateToDatabase = function(candidate, monthPosted) {
     console.log("saveCandidateToDatabase, ", candidate);
 
-    var parttimeRe = /part[\ \-]?time/gi;
-    var freelanceRe = /free[\ \-]?lanc/gi;
-    var jobType = "Full Time";
-    if (parttimeRe.test(candidate.text)) {
-        jobType = "Part Time";
-    }
-    else if (freelanceRe.test(candidate.text)) {
-        jobType = "/".join(jobType, "Freelance");
-    }
-
     var candidateDatum = new CandidateDatum({
         id: candidate.id,
         time: candidate.time * 1000,
@@ -158,7 +148,7 @@ var saveJobToDatabase = function(job, monthPosted) {
         var jobType = "Full Time";
         var jobTypeRe = /part[\ \-]?time/gi;
         if (jobTypeRe.test(job.text)) {
-            jobType = "Part Time";
+            jobType = "/".join(jobType, "Part Time");
         }
         var freelanceRe = /free[\ \-]?lanc/gi;
         if (freelanceRe.test(candidate.text)) {

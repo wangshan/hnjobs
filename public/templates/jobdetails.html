@@ -5,19 +5,21 @@
                 <h4>Share This Job</h4>
                 <!-- Go to www.addthis.com/dashboard to customize your tools -->
                 <div class="addthis_sharing_toolbox"></div>
-                <hr>
-                <div><a type="button"
-                        class="btn btn-success"
-                        ng-click="sendEmail()">
-                        <i class="fa fa-envelope-o"></i> Send</a>
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <a type="button"
+                            role="button"
+                            class="btn btn-success"
+                            ng-click="sendEmail()">
+                            <i class="fa fa-envelope-o"></i> Mail</a>
+                    <a type="button"
+                            role="button"
+                            class="btn btn-primary"
+                            ui-sref="app">
+                            <i class="fa fa-arrow-circle-left"></i> Back</a>
                 </div>
                 <hr>
                 <p class="well" ng-bind-html="share.jobContent | asHtml"></p>
                 <br>
-                <button class="btn btn-primary"
-                    type="button" ui-sref="app">
-                    Back
-                </button>
             </div>
         </div>
     </div>

@@ -8,7 +8,7 @@ var Job = db.model('Job', {
     position:      { type: String,  required: false },
     description:   { type: String,  required: false },
     url:           { type: String,  required: false },
-    type:          { type: String,  required: false }, // fulltime, partime, freelance, intern
+    type:          { type: String,  required: false, default: "Full Time" },
     where:         { type: String,  required: false },
     remote:        { type: Boolean, required: false, default: false },
     onsite:        { type: Boolean, required: false, default: true },

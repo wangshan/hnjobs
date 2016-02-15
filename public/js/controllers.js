@@ -8,6 +8,17 @@ app.filter('asHtml', ['$sce', function($sce) {
     };
 }]);
 
+app.filter('printBool', function() {
+    return function(bool, textToPrint) {
+        if (textToPrint) {
+            return bool ? textToPrint : "";
+        }
+        else {
+            return bool ? "yes" : "no";
+        }
+    }
+});
+
 app.filter('regex', function() {
     return function(input, field, regexText) {
         if (!regexText) {
@@ -55,6 +66,7 @@ app.controller('HnJobsController',
     }
 
     $scope.tab = 1;
+    $scope.month = 0;
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
@@ -80,19 +92,52 @@ app.controller('HnJobsController',
         }
         );
 
+    /* TODO: make this a directive?
+    $(".dropdown-menu li a").click(function () {
+        var selText = $(this).text();
+        $(this).closest('div').find('button[data-toggle="dropdown"]').html(selText + ' <span class="caret"></span>');
+        $(this).closest('.dropdown').removeClass("open");
+        return false;
+    });
+    */
+
     $scope.filterByMonth = function(job) {
         return $scope.filtMonth == null
             || $scope.getMonthYearText($scope.filtMonth) == job.monthPosted;
     }
 
-    $scope.select = function(setTab) {
-        $scope.tab = setTab;
-        if (setTab == 1) {
+    $scope.selectMonth = function(setMonth) {
+        $scope.month = setMonth;
+        if (setMonth == $scope.dateLabels.length) {
             $scope.filtMonth = null;
         }
         else {
-            $scope.filtMonth = $scope.dateLabels[setTab-2];
+            $scope.filtMonth = $scope.dateLabels[setMonth];
         }
+    };
+
+    $scope.selectJobType = function(setTab) {
+        $scope.tab = setTab;
+        if (setTab == $scope.jobTypes.length + 1) {
+            $scope.filtType = null;
+        }
+        else {
+            $scope.filtType = $scope.jobTypes[setTab-1];
+        }
+    };
+
+    // TODO: this should be removed once dropdown is fixed properly
+    $scope.getFiltMonth = function() {
+        if ($scope.filtMonth == null) {
+            return "All";
+        }
+        else {
+            return $scope.getMonthYearText($scope.filtMonth);
+        }
+    }
+
+    $scope.isSelectedMonth = function(check) {
+        return ($scope.month === check);
     };
 
     $scope.isSelected = function(checkTab) {
@@ -111,6 +156,26 @@ app.controller('HnJobsController',
         $scope.share.jobContent = job.description;
         console.log(job.id);
     };
+
+    $scope.postType = [
+        "Who Is Hiring",
+        "Who Wants To Be Hired",
+        "Seeking Freelancer",
+        "Seeking Frelance Work",
+        ];
+
+    $scope.jobTypes = [
+        "Full Time",
+        "Part Time",
+        "Freelance",
+        ];
+
+    $scope.filtType = null;
+
+    $scope.filterByJobType = function(job) {
+        return $scope.filtType == null
+            || $scope.filtType == job.type;
+    }
 
 }])
 

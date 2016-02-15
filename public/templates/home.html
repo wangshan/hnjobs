@@ -32,21 +32,50 @@
                         </form>
                         <br>
                         <form class="dropdown">
+                            <!--
+                            <select>
+                                <option value="0" class="form-control" label="Month Posted" disabled></option>
+                                <option ng-repeat="dateLabel in dateLabels"
+                                    value="{{ getMonthYearText(dateLabel) }}"
+                                    ng-selected="{{ isSelected($index + 1) }}"
+                                    ng-model="selectedMonth"
+                                    ng-change="{{ select($index + 1) }}">
+                                    {{ getMonthYearText(dateLabel) }}
+                                </option>
+                                <option
+                                    value="All"
+                                    ng-selected="{{ isSelected($index + 1) }}">
+                                    All 
+                                </option>
+                            </select>
+                            -->
+                            <!-- FIXME: how to make this script work? -->
+                            <script type="text/javascript">
+                                $('.dropdown-menu li a').on('click', function() {
+                                    var selText = $(this).text();
+                                    console.log(selText);
+                                    $('.dropdown-toggle').html(selText + '<span class="caret"></span>');    
+                                });
+                            </script>
                             <button class="btn btn-warning dropdown-toggle"
                                 type="button"
                                 id="month"
                                 data-toggle="dropdown"
                                 aria-haspopup="true"
                                 aria-expanded="true">
-                                Month Posted
+                                {{ getFiltMonth() }}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="month">
                                 <li ng-repeat="dateLabel in dateLabels">
-                                    <a href="#">{{ getMonthYearText(dateLabel) }}</a>
+                                    <a ng-click="selectMonth($index)"
+                                    aria-controls="getMonthYearText(dateLabel)">
+                                    {{ getMonthYearText(dateLabel) }}</a>
                                 </li>
                                 <li>
-                                    <a href="#" aria-controls="All">All</a>
+                                <a ng-click="selectMonth($index)"
+                                    aria-controls="All">
+                                    All</a>
                                 </li>
                             </ul>
                         </form>
@@ -55,19 +84,19 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
                      ng-class="{active: isSelected(1)}">
-                    <a ng-click="select(1)"
+                    <a ng-click="selectJobType(1)"
                      aria-controls="All"
                      role="tab">All</a></li>
                     <li role="presentation"
-                     ng-repeat="dateLabel in dateLabels"
+                     ng-repeat="jobType in jobTypes"
                      ng-class="{active: isSelected($index + 2)}">
-                    <a ng-click="select($index + 2)"
-                     aria-controls="getMonthYearText(dateLabel)"
-                     role="tab">{{ getMonthYearText(dateLabel) }}</a></li>
+                    <a ng-click="selectJobType($index + 2)"
+                     aria-controls="jobType"
+                     role="tab">{{ jobType }}</a></li>
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | regex: 'description': search.searchPattern">
+                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | filter: filterByJobType | regex: 'description': search.searchPattern">
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
                                     <span class="label label-info">{{job.monthPosted}}</span>
@@ -75,6 +104,8 @@
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{job.type}}</span>
                                     <span class="badge">{{job.time | date}}</span>
+                                    <span class="badge">{{job.remote | printBool: 'remote'}}</span>
+                                    <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
                                     <span class="pull-right">
                                         <a type="button" class="btn btn-primary"
                                             ui-sref="app.jobdetails({id: job.id})"
