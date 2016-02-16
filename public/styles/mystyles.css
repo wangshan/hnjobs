@@ -127,3 +127,6 @@ form.form-search:before {
     opacity: .5;
     z-index: 1000;
 }
+.pointer-on-tab {
+    cursor: pointer;
+}

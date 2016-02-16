@@ -4,11 +4,29 @@ angular.module('startupJobsApp')
         .constant("baseURL", "http://localhost:3000/api/")
         .service('hnJobsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
             this.getHnJobs = function() {
-                return $resource(baseURL + "jobs/:id", null, {'update': {method: 'PUT'}}); 
+                return $resource(baseURL + "jobs/:id", null, {
+                        'update': {
+                            method: 'PUT'
+                        },
+                        'query': {
+                            method: 'GET',
+                            cache: true,
+                            isArray: true
+                        }
+                    }); 
             };
 
             this.getHnCandidates = function() {
-                return $resource(baseURL + "candidates/:id", null, {'update': {method: 'PUT'}}); 
+                return $resource(baseURL + "candidates/:id", null, {
+                        'update': {
+                            method: 'PUT'
+                        },
+                        'query': {
+                            method: 'GET',
+                            cache: true,
+                            isArray: true
+                        },
+                    }); 
             };
         }])
 
@@ -34,14 +52,14 @@ angular.module('startupJobsApp')
                 return $resource(baseURL + "datelabels/:id", null, {
                     'query': {
                        method: 'GET',
+                       cache: true,
                        isArray: true,
                        interceptor: {response: parseResponseDates}
                     },
                     'update': {
                        method: 'PUT'
                     }
-                }
-                );
+                });
             };
         }])
 
