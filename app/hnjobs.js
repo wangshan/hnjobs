@@ -32,24 +32,33 @@ var requestById = function(type, id, onEnd) {
 }
 
 var topics = [
-    //{ title: "hiring"     , text: "Ask HN: Who is hiring.*" }                 ,
+    { title: "hiring"     , text: "Ask HN: Who is hiring.*" }                 ,
     { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" }         ,
-    { title: "freelance"  , text: "Ask HN: Freelancer? Seeking freelancer.*" },
+    { title: "freelance"  , text: "Ask HN: Freelancer.*" },
     ];
 
 var parseWhosHiring = function(fileName, data, filter) {
-    topics.forEach(function(topic) {
-        var re = new RegExp(topic.text + filter, "gi");
-        if (re.test(data.title)) {
-            data.kids.forEach(function(entry) {
-                console.log("requesting item/" + entry);
-                requestById("item/", entry, function(post) {
-                    savePostToDatabase(post, topic.title, filter);
+    if (data.title) {
+        //console.log("title: " + data.title);
+        for (var i = 0; i < topics.length; ++i) {
+        //topics.forEach(function(topic) {
+            topic = topics[i];
+            //console.log("topic: " + topic.title);
+            var re = new RegExp(topic.text + filter, "gi");
+            if (re.test(data.title)) {
+                console.log("match ", topic.text);
+                data.kids.forEach(function(entry) {
+                    //console.log("requesting item/" + entry);
+                    requestById("item/", entry, function(post) {
+                        if (post) {
+                            savePostToDatabase(post, topic, filter);
+                        }
+                    });
                 });
-            });
-        }
-
-    })
+                break;
+            }
+        }//);
+    }
 }
 
 // for debugging only
@@ -82,34 +91,35 @@ String.prototype.decodeHTML = function() {
 
 
 var savePostToDatabase = function(post, topic, monthPosted) {
-    if (topic == "hiring") {
-        saveJobToDatabase(post, monthPosted)
+    if (topic.title == "hiring") {
+        saveJobToDatabase(post, "Who Is Hiring", monthPosted);
     }
-    else if (topic == "wantshired") {
-        saveCandidateToDatabase(post, monthPosted)
+    else if (topic.title == "wantshired") {
+        saveCandidateToDatabase(post, "Who Wants To Be Hired", monthPosted);
     }
-    else if (topic == "freelance") {
-        console.log("freelance");
+    else if (topic.title == "freelance" && post.text) {
         var seekingFreelancerRe = /SEEKING FREELANCER/gi;
         var seekingWorkRe = /SEEKING WORK/gi;
         if (seekingFreelancerRe.test(post.text)) {
-            saveJobToDatabase(post, monthPosted)
+            //console.log("seeking freelancer");
+            saveJobToDatabase(post, "Seeking Freelancer", monthPosted);
         }
         else if (seekingWorkRe.test(post.text)) {
-            saveCandidateToDatabase(post, monthPosted)
+            saveCandidateToDatabase(post, "Seeking Freelance Work", monthPosted);
         }
         else {
-            console.log("freelance, post doesn't say what's seeking");
+            console.log("freelance, post doesn't say what's seeking, ", post.by);
         }
     }
 }
 
-var saveCandidateToDatabase = function(candidate, monthPosted) {
-    console.log("saveCandidateToDatabase, ", candidate);
+var saveCandidateToDatabase = function(candidate, source, monthPosted) {
+    //console.log("saveCandidateToDatabase, ", candidate);
 
     var candidateDatum = new CandidateDatum({
         id: candidate.id,
         time: candidate.time * 1000,
+        source: source,
         monthPosted: monthPosted,
         description: candidate.text,
     });
@@ -127,7 +137,7 @@ var saveCandidateToDatabase = function(candidate, monthPosted) {
             );
 }
 
-var saveJobToDatabase = function(job, monthPosted) {
+var saveJobToDatabase = function(job, source, monthPosted) {
     // don't show if the text is too short and there's no title
     if ((!job.text || job.text.length < 16) && !job.title) {
         return;
@@ -138,21 +148,21 @@ var saveJobToDatabase = function(job, monthPosted) {
             var title = job.text.split(/<[a-zA-Z]|\n/)[0];
             var decodedTitle = title.decodeHTML();
             job.title = decodedTitle.replace(/^[-\|\.\ ]+|[-\|\.\(\[\{\ ,;:]+$/g, '');
-            console.log("job.title = " + job.title);
+            //console.log("job.title = " + job.title);
             var titleLine = "job.title = " + job.title + "\n";
         }
         if (!job.text) {
             job.text = job.title;
         }
 
-        var jobType = "Full Time";
-        var jobTypeRe = /part[\ \-]?time/gi;
-        if (jobTypeRe.test(job.text)) {
-            jobType = "/".join(jobType, "Part Time");
+        var jobType = ["Full Time"];
+        var parttimeRe = /part[\ \-]?time/gi;
+        if (parttimeRe.test(job.text)) {
+            jobType.push("Part Time");
         }
         var freelanceRe = /free[\ \-]?lanc/gi;
-        if (freelanceRe.test(candidate.text)) {
-            jobType = "/".join(jobType, "Freelance");
+        if (freelanceRe.test(job.text)) {
+            jobType.push("Freelance");
         }
 
         var remoteRe = /REMOTE/gi;
@@ -164,6 +174,7 @@ var saveJobToDatabase = function(job, monthPosted) {
         var jobDatum = new JobDatum({
             id: job.id,
             time: job.time * 1000,
+            source: source,
             company: "",
             position: job.title,
             description: job.text,

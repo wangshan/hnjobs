@@ -31,78 +31,59 @@
                             </div>
                         </form>
                         <br>
-                        <form class="dropdown">
-                            <!--
-                            <select>
-                                <option value="0" class="form-control" label="Month Posted" disabled></option>
-                                <option ng-repeat="dateLabel in dateLabels"
-                                    value="{{ getMonthYearText(dateLabel) }}"
-                                    ng-selected="{{ isSelected($index + 1) }}"
-                                    ng-model="selectedMonth"
-                                    ng-change="{{ select($index + 1) }}">
-                                    {{ getMonthYearText(dateLabel) }}
-                                </option>
-                                <option
-                                    value="All"
-                                    ng-selected="{{ isSelected($index + 1) }}">
-                                    All 
-                                </option>
-                            </select>
-                            -->
-                            <!-- FIXME: how to make this script work? -->
-                            <script type="text/javascript">
-                                $('.dropdown-menu li a').on('click', function() {
-                                    var selText = $(this).text();
-                                    console.log(selText);
-                                    $('.dropdown-toggle').html(selText + '<span class="caret"></span>');    
-                                });
-                            </script>
-                            <button class="btn btn-warning dropdown-toggle"
-                                type="button"
-                                id="month"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="true">
-                                {{ getFiltMonth() }}
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="month">
-                                <li ng-repeat="dateLabel in dateLabels">
-                                    <a ng-click="selectMonth($index)"
-                                    aria-controls="getMonthYearText(dateLabel)">
-                                    {{ getMonthYearText(dateLabel) }}</a>
-                                </li>
-                                <li>
-                                <a ng-click="selectMonth($index)"
-                                    aria-controls="All">
-                                    All</a>
-                                </li>
-                            </ul>
-                        </form>
                     </div>
                 </div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"
-                     ng-class="{active: isSelected(1)}">
-                    <a ng-click="selectJobType(1)"
-                     aria-controls="All"
-                     role="tab">All</a></li>
-                    <li role="presentation"
-                     ng-repeat="jobType in jobTypes"
-                     ng-class="{active: isSelected($index + 2)}">
-                    <a ng-click="selectJobType($index + 2)"
-                     aria-controls="jobType"
-                     role="tab">{{ jobType }}</a></li>
+                        ng-repeat="source in sourceTypes"
+                        ng-class="{active: isSelected($index)}">
+                        <a ng-click="selectSourceType($index)"
+                            aria-controls="source"
+                            role="tab">{{ source }}</a>
+                    </li>
+                    <li role="presentation" class="dropdown">
+                        <!-- FIXME: how to make this script work? -->
+                        <script type="text/javascript">
+                            $('.dropdown-menu li a').on('click', function() {
+                                var selText = $(this).text();
+                                console.log(selText);
+                                $('.dropdown-toggle').html(selText + '<span class="caret"></span>');    
+                            });
+                        </script>
+                        <a role="button" class="dropdown-toggle"
+                            type="button"
+                            id="month"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            {{ getFiltMonth() }}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="month">
+                            <li>
+                                <a ng-click="selectMonth(0)"
+                                    aria-controls="All">
+                                    All</a>
+                            </li>
+                            <li ng-repeat="dateLabel in dateLabels">
+                                <a ng-click="selectMonth($index+1)"
+                                aria-controls="getMonthYearText(dateLabel)">
+                                {{ getMonthYearText(dateLabel) }}</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <ul class="media-list tab-pane fade in active">
-                        <li class="media" ng-repeat="job in jobs | filter: filterByMonth | filter: filterByJobType | regex: 'description': search.searchPattern">
+                        <li class="media"
+                            ng-show="showJob"
+                            ng-repeat="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern">
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
                                     <span class="label label-info">{{job.monthPosted}}</span>
                                     <span class="badge">{{job.source}}</span>
                                     <!--show different color using ng-class based on job.type-->
-                                    <span class="badge">{{job.type}}</span>
+                                    <span class="badge">{{job.type | printArray: '/'}}</span>
                                     <span class="badge">{{job.time | date}}</span>
                                     <span class="badge">{{job.remote | printBool: 'remote'}}</span>
                                     <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
@@ -120,6 +101,20 @@
                                     -->
                                 </h3>
                                 <p ng-bind-html="job.description | asHtml"></p>
+                            </div>
+                        </li>
+                        <li class="media"
+                            ng-show="!showJob"
+                            ng-repeat="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern">
+                            <div class="media-body">
+                                <h3 class="media-heading">{{candidate.name}}
+                                    <span class="label label-info">{{candidate.monthPosted}}</span>
+                                    <span class="badge">{{candidate.source}}</span>
+                                    <!--show different color using ng-class based on job.type-->
+                                    <span class="badge">{{candidate.jobType}}</span>
+                                    <span class="badge">{{candidate.time | date}}</span>
+                                </h3>
+                                <p ng-bind-html="candidate.description | asHtml"></p>
                             </div>
                         </li>
                     </ul>

@@ -6,6 +6,10 @@ angular.module('startupJobsApp')
             this.getHnJobs = function() {
                 return $resource(baseURL + "jobs/:id", null, {'update': {method: 'PUT'}}); 
             };
+
+            this.getHnCandidates = function() {
+                return $resource(baseURL + "candidates/:id", null, {'update': {method: 'PUT'}}); 
+            };
         }])
 
         .service('dateLabelsFactory', ['$resource', 'baseURL', function($resource, baseURL) {

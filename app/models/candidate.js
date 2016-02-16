@@ -5,9 +5,8 @@ var db = require('../db');
 var Candidate = db.model('Candidate', {
     id:             { type: String,     required: true },
     time:           { type: Number,     required: true },
-    source:         { type: String,     required: true, default: "HackerNews" },
+    source:         { type: String,     required: true, default: "Who Is Hiring" },
     monthPosted:    { type: String,     required: true },
-    jobType:        { type: String,     required: true, default: "Full Time" },
     description:    { type: String,     required: false },
 });
 

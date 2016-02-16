@@ -8,6 +8,14 @@ app.filter('asHtml', ['$sce', function($sce) {
     };
 }]);
 
+app.filter('printArray', function() {
+    return function(array, separator) {
+        if (array && array.length > 0) {
+            return array.join(separator);
+        }
+    }
+});
+
 app.filter('printBool', function() {
     return function(bool, textToPrint) {
         if (textToPrint) {
@@ -65,11 +73,23 @@ app.controller('HnJobsController',
         return getMonthName(date) + " " + date.getFullYear();
     }
 
-    $scope.tab = 1;
-    $scope.month = 0;
+    $scope.tab = 0;
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
+
+    // must match source field in the models
+    $scope.sourceTypes = [
+        "Who Is Hiring",
+        "Seeking Freelancer",
+        "Who Wants To Be Hired",
+        "Seeking Freelance Work",
+        ];
+
+    // true shows job post, otherwise show candidate post
+    $scope.showJob = true;
+
+    $scope.filtType = $scope.sourceTypes[0];
 
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
@@ -92,6 +112,16 @@ app.controller('HnJobsController',
         }
         );
 
+    $scope.candidates = hnJobsFactory.getHnCandidates().query(
+        function(response) { // the response is the actual data
+            $scope.candidates = response;
+        },
+        function(response) { // but here is the response object, why?
+            $scope.message = "Failed to get candidates\n"
+                + "Error: " + response.status + " " + response.statusText;
+        }
+        );
+
     /* TODO: make this a directive?
     $(".dropdown-menu li a").click(function () {
         var selText = $(this).text();
@@ -101,30 +131,8 @@ app.controller('HnJobsController',
     });
     */
 
-    $scope.filterByMonth = function(job) {
-        return $scope.filtMonth == null
-            || $scope.getMonthYearText($scope.filtMonth) == job.monthPosted;
-    }
-
-    $scope.selectMonth = function(setMonth) {
-        $scope.month = setMonth;
-        if (setMonth == $scope.dateLabels.length) {
-            $scope.filtMonth = null;
-        }
-        else {
-            $scope.filtMonth = $scope.dateLabels[setMonth];
-        }
-    };
-
-    $scope.selectJobType = function(setTab) {
-        $scope.tab = setTab;
-        if (setTab == $scope.jobTypes.length + 1) {
-            $scope.filtType = null;
-        }
-        else {
-            $scope.filtType = $scope.jobTypes[setTab-1];
-        }
-    };
+    $scope.filtMonth = $scope.dateLabels[0];
+    console.log("initially", $scope.filtMonth);
 
     // TODO: this should be removed once dropdown is fixed properly
     $scope.getFiltMonth = function() {
@@ -136,13 +144,48 @@ app.controller('HnJobsController',
         }
     }
 
-    $scope.isSelectedMonth = function(check) {
-        return ($scope.month === check);
+    $scope.selectMonth = function(setMonth) {
+        console.log("selectMonth, setMonth", setMonth);
+        if (setMonth == 0) {
+            $scope.filtMonth = null;
+        }
+        else {
+            $scope.filtMonth = $scope.dateLabels[setMonth-1];
+            console.log("selectMonth", $scope.filtMonth);
+        }
+    };
+
+    $scope.filterByMonth = function(job) {
+        return $scope.filtMonth == null
+            || $scope.getMonthYearText($scope.filtMonth) == job.monthPosted;
+    }
+
+    $scope.selectSourceType = function(setTab) {
+        console.log("selectSourceType, ", setTab);
+        $scope.tab = setTab;
+        if (setTab >= $scope.sourceTypes.length) {
+            $scope.filtType = null;
+        }
+        else {
+            $scope.filtType = $scope.sourceTypes[setTab];
+            // assumes the first two sources are for hiring
+            $scope.showJob = (setTab < 2);
+            console.log("selectSourceType, filtType, ", $scope.filtType);
+            console.log("selectSourceType, showJob, ", $scope.showJob);
+        }
     };
 
     $scope.isSelected = function(checkTab) {
+        console.log("isSelected, ", checkTab);
         return ($scope.tab === checkTab);
     };
+
+    $scope.filterBySource = function(job) {
+        console.log("filterBySource, job.source,", job.source);
+        console.log("filterBySource, filtType,", $scope.filtType);
+        return $scope.filtType == null
+            || $scope.filtType == job.source;
+    }
 
     $scope.share = {
         jobId: "",
@@ -156,26 +199,6 @@ app.controller('HnJobsController',
         $scope.share.jobContent = job.description;
         console.log(job.id);
     };
-
-    $scope.postType = [
-        "Who Is Hiring",
-        "Who Wants To Be Hired",
-        "Seeking Freelancer",
-        "Seeking Frelance Work",
-        ];
-
-    $scope.jobTypes = [
-        "Full Time",
-        "Part Time",
-        "Freelance",
-        ];
-
-    $scope.filtType = null;
-
-    $scope.filterByJobType = function(job) {
-        return $scope.filtType == null
-            || $scope.filtType == job.type;
-    }
 
 }])
 
@@ -241,7 +264,7 @@ app.controller('HnJobsController',
         var link = "mailto:"+ $scope.share.email
              + "?subject= " + escape($scope.share.subject)
              + "&body=" + encodeURIComponent($location.absUrl());
-             // FIXME: can't send html in mailto body, so this won't work!
+             // NOTE: can't send html in mailto body, so this won't work!
              //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.jobContent));
 
         window.location.href = link;
