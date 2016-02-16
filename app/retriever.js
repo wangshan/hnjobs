@@ -4,6 +4,24 @@ var CronJob = require('cron').CronJob;
 var _ = require('lodash');
 var MonthYear = require('./month_year');
 
+var argv = require('yargs')
+    .usage('Usage: node $0 [options]')
+    .help('h')
+    .alias('h', 'help')
+    .boolean(['f', 'd'])
+    .alias('f', 'force')
+    .describe('f', 'Force refresh database')
+    .default('f', false)
+    .alias('d', 'debug')
+    .describe('d', 'Run in debug mode')
+    .default('d', false)
+    .demand(['m'])
+    .alias('m', 'mode')
+    .choices(['oneoff', 'daemon'])
+    .describe('m', 'Running mode, daemon mode will refresh database regularly')
+    .default('m', 'oneoff')
+    .argv;
+ 
 console.log("starting...");
 
 var getMonthName = function(date) {
@@ -68,7 +86,7 @@ var saveNewDateLabel = function(dateLabels, newDate) {
                 if (dateLabels.length > 4) {
                     dateLabels.shift();
                 }
-                else if (dateLabels.length < 4) {
+                else if (dateLabels.length < 4 || argv.f ) {
                     // FIXME: if there are >= 4 date labels, even the actual
                     // data is empty, we still only request the latest month,
                     // maybe I should try
@@ -125,7 +143,9 @@ var retrieve = function() {
         });
 }
 
-retrieve();
+if (argv.m == 'oneoff') {
+    retrieve();
+}
 
 //var cronGetJob = new CronJob('*/30 * * * * *', function() {
 //    HnJobs.getJobs('../data/jobs.txt');
