@@ -145,13 +145,11 @@ app.controller('HnJobsController',
     }
 
     $scope.selectMonth = function(setMonth) {
-        console.log("selectMonth, setMonth", setMonth);
         if (setMonth == 0) {
             $scope.filtMonth = null;
         }
         else {
             $scope.filtMonth = $scope.dateLabels[setMonth-1];
-            console.log("selectMonth", $scope.filtMonth);
         }
     };
 
@@ -161,7 +159,6 @@ app.controller('HnJobsController',
     }
 
     $scope.selectSourceType = function(setTab) {
-        console.log("selectSourceType, ", setTab);
         $scope.tab = setTab;
         if (setTab >= $scope.sourceTypes.length) {
             $scope.filtType = null;
@@ -170,19 +167,14 @@ app.controller('HnJobsController',
             $scope.filtType = $scope.sourceTypes[setTab];
             // assumes the first two sources are for hiring
             $scope.showJob = (setTab < 2);
-            console.log("selectSourceType, filtType, ", $scope.filtType);
-            console.log("selectSourceType, showJob, ", $scope.showJob);
         }
     };
 
     $scope.isSelected = function(checkTab) {
-        console.log("isSelected, ", checkTab);
         return ($scope.tab === checkTab);
     };
 
     $scope.filterBySource = function(job) {
-        console.log("filterBySource, job.source,", job.source);
-        console.log("filterBySource, filtType,", $scope.filtType);
         return $scope.filtType == null
             || $scope.filtType == job.source;
     }

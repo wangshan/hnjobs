@@ -39,14 +39,10 @@ var topics = [
 
 var parseWhosHiring = function(fileName, data, filter) {
     if (data.title) {
-        //console.log("title: " + data.title);
         for (var i = 0; i < topics.length; ++i) {
-        //topics.forEach(function(topic) {
-            topic = topics[i];
-            //console.log("topic: " + topic.title);
+            var topic = topics[i];
             var re = new RegExp(topic.text + filter, "gi");
             if (re.test(data.title)) {
-                console.log("match ", topic.text);
                 data.kids.forEach(function(entry) {
                     //console.log("requesting item/" + entry);
                     requestById("item/", entry, function(post) {
@@ -57,7 +53,7 @@ var parseWhosHiring = function(fileName, data, filter) {
                 });
                 break;
             }
-        }//);
+        }
     }
 }
 
@@ -101,14 +97,14 @@ var savePostToDatabase = function(post, topic, monthPosted) {
         var seekingFreelancerRe = /SEEKING FREELANCER/gi;
         var seekingWorkRe = /SEEKING WORK/gi;
         if (seekingFreelancerRe.test(post.text)) {
-            //console.log("seeking freelancer");
             saveJobToDatabase(post, "Seeking Freelancer", monthPosted);
         }
         else if (seekingWorkRe.test(post.text)) {
             saveCandidateToDatabase(post, "Seeking Freelance Work", monthPosted);
         }
         else {
-            console.log("freelance, post doesn't say what's seeking, ", post.by);
+            console.log("freelance, post doesn't say what's seeking, ",
+                    post.by, ",", post.time, ",", post.id);
         }
     }
 }
@@ -246,6 +242,7 @@ var getWhoIsHiring = function(fileName, filter) {
         var postIds = whoishiring.submitted;
         postIds.forEach(function(id) {
             //console.log("id: ", id);
+            //TODO cache obsolete ids
             requestById("item/", id, function(data) {
                 parseWhosHiring(fileName, data, filter);
             });
