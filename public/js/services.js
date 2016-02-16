@@ -63,6 +63,12 @@ angular.module('startupJobsApp')
             };
         }])
 
+        .service('rememberService', function() {
+            return {
+                scrollTop: undefined
+            };
+        })
+
         .service('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
             /*
             this.getFeedback = function() {

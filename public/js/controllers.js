@@ -47,6 +47,37 @@ app.filter('regex', function() {
     };
 });
 
+app.directive('scroller', ['$timeout', 'rememberService', function($timeout, rememberService) {
+    return {
+        restrict: 'EA', // can be used as element or attribute
+        scope: {}, // create own isolated scope
+        link: function(scope, elem, attrs) {
+            var raw = elem[0];  // get raw element object to access its scrollTop property
+            
+            elem.bind('scroll', function() {
+                // remember where we are
+                rememberService.scrollTop = raw.scrollTop;
+            });
+
+            // Need to wait until the digest cycle is complete to apply this property change to the element.
+            $timeout(function() {
+                raw.scrollTop = rememberService.scrollTop;
+            });
+        }
+    };
+}]);
+
+app.directive('back', ['$window', function($window) {
+    return {
+        restrict: 'EA', // can be used as element or attribute
+        link: function(scope, elem, attrs) {
+            elem.bind('click', function() {
+                $window.history.back();
+            });
+        }
+    };
+}]);
+
 app.controller('HnJobsController',
     ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
     
