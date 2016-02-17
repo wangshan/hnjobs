@@ -1,5 +1,6 @@
 var https = require("https");
 var fs = require("fs");
+var _ = require('lodash');
 var JobDatum = require('./models/job');
 var CandidateDatum = require('./models/candidate');
 
@@ -32,12 +33,13 @@ var requestById = function(type, id, onEnd) {
 }
 
 var topics = [
-    { title: "hiring"     , text: "Ask HN: Who is hiring.*" }                 ,
-    { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" }         ,
+    { title: "hiring"     , text: "Ask HN: Who is hiring.*" },
+    { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" },
     { title: "freelance"  , text: "Ask HN: Freelancer.*" },
     ];
 
 var parseWhosHiring = function(fileName, data, filter) {
+    var foundMatch = false;
     if (data.title) {
         for (var i = 0; i < topics.length; ++i) {
             var topic = topics[i];
@@ -51,9 +53,15 @@ var parseWhosHiring = function(fileName, data, filter) {
                         }
                     });
                 });
+                foundMatch = true;
                 break;
             }
         }
+    }
+
+    if (!foundMatch) {
+        // optimization, don't repeately ask for old ids
+        obsoleteIds.push(data.id);
     }
 }
 
@@ -110,8 +118,6 @@ var savePostToDatabase = function(post, topic, monthPosted) {
 }
 
 var saveCandidateToDatabase = function(candidate, source, monthPosted) {
-    //console.log("saveCandidateToDatabase, ", candidate);
-
     var candidateDatum = new CandidateDatum({
         id: candidate.id,
         time: candidate.time * 1000,
@@ -237,15 +243,19 @@ var getJobs = function(fileName) {
     });
 }
 
+// TODO: how to make this not global? save in db or something
+var obsoleteIds = [];
+
 var getWhoIsHiring = function(fileName, filter) {
     return requestById("user/", "whoishiring", function(whoishiring) {
         var postIds = whoishiring.submitted;
         postIds.forEach(function(id) {
             //console.log("id: ", id);
-            //TODO cache obsolete ids
-            requestById("item/", id, function(data) {
-                parseWhosHiring(fileName, data, filter);
-            });
+            if (_.indexOf(obsoleteIds, id) == -1) {
+                requestById("item/", id, function(data) {
+                    parseWhosHiring(fileName, data, filter);
+                });
+            }
         });
     });
 }
