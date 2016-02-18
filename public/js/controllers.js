@@ -79,7 +79,8 @@ app.directive('back', ['$window', function($window) {
 }]);
 
 app.controller('HnJobsController',
-    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', function($scope, hnJobsFactory, dateLabelsFactory) {
+    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService',
+    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService) {
     
     // how to share these two functions between front and back end?
 
@@ -104,7 +105,6 @@ app.controller('HnJobsController',
         return getMonthName(date) + " " + date.getFullYear();
     }
 
-    $scope.tab = 0;
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
@@ -120,7 +120,11 @@ app.controller('HnJobsController',
     // true shows job post, otherwise show candidate post
     $scope.showJob = true;
 
-    $scope.filtType = $scope.sourceTypes[0];
+    if (!cacheStateService.filtType) {
+        cacheStateService.filtType = $scope.sourceTypes[0];
+    }
+    $scope.filtType = cacheStateService.filtType;
+    console.log("initially, filtType=", $scope.filtType);
 
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
@@ -162,8 +166,11 @@ app.controller('HnJobsController',
     });
     */
 
-    $scope.filtMonth = $scope.dateLabels[0];
-    console.log("initially", $scope.filtMonth);
+    if (!cacheStateService.filtMonth) {
+        cacheStateService.filtMonth = $scope.dateLabels[0];
+    }
+    $scope.filtMonth = cacheStateService.filtMonth;
+    console.log("initially, filtMonth=", $scope.filtMonth);
 
     // TODO: this should be removed once dropdown is fixed properly
     $scope.getFiltMonth = function() {
@@ -177,11 +184,12 @@ app.controller('HnJobsController',
 
     $scope.selectMonth = function(setMonth) {
         if (setMonth == 0) {
-            $scope.filtMonth = null;
+            cacheStateService.filtMonth = null;
         }
         else {
-            $scope.filtMonth = $scope.dateLabels[setMonth-1];
+            cacheStateService.filtMonth = $scope.dateLabels[setMonth-1];
         }
+        $scope.filtMonth = cacheStateService.filtMonth;
     };
 
     $scope.filterByMonth = function(job) {
@@ -190,19 +198,21 @@ app.controller('HnJobsController',
     }
 
     $scope.selectSourceType = function(setTab) {
-        $scope.tab = setTab;
+        cacheStateService.tab = setTab;
         if (setTab >= $scope.sourceTypes.length) {
-            $scope.filtType = null;
+            cacheStateService.filtType = null;
         }
         else {
-            $scope.filtType = $scope.sourceTypes[setTab];
+            //$scope.filtType = $scope.sourceTypes[setTab];
+            cacheStateService.filtType = $scope.sourceTypes[setTab];
             // assumes the first two sources are for hiring
             $scope.showJob = (setTab < 2);
         }
+        $scope.filtType = cacheStateService.filtType;
     };
 
     $scope.isSelected = function(checkTab) {
-        return ($scope.tab === checkTab);
+        return (cacheStateService.tab === checkTab);
     };
 
     $scope.filterBySource = function(job) {

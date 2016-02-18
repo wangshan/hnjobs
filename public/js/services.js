@@ -69,6 +69,17 @@ angular.module('startupJobsApp')
             };
         })
 
+        .service('cacheStateService', function() {
+            var model = {
+                tab: 0,
+                filtType: undefined,
+                filtMonth: undefined,
+                searchPattern: undefined,
+            };
+
+            return model;
+        })
+
         .service('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
             /*
             this.getFeedback = function() {
