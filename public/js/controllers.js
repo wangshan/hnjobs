@@ -166,14 +166,22 @@ app.controller('HnJobsController',
     });
     */
 
-    if (!cacheStateService.filtMonth) {
-        cacheStateService.filtMonth = $scope.dateLabels[0];
-    }
     $scope.filtMonth = cacheStateService.filtMonth;
     console.log("initially, filtMonth=", $scope.filtMonth);
 
     // TODO: this should be removed once dropdown is fixed properly
     $scope.getFiltMonth = function() {
+        if (angular.isUndefined(cacheStateService.filtMonth)) {
+            $scope.$watch(
+                function() {
+                    return $scope.dateLabels; },
+                function() {
+                    cacheStateService.filtMonth = $scope.dateLabels[0];
+                    console.log("watch, ", $scope.dateLabels[0]); }
+                    );
+        }
+        $scope.filtMonth = cacheStateService.filtMonth;
+
         if ($scope.filtMonth == null) {
             return "All";
         }
