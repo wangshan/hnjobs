@@ -333,6 +333,7 @@ app.controller('HnJobsController',
 
 .controller('AboutController',
         ['$scope', '$stateParams', function($scope, $stateParams) {
+    console.log("AboutController");
     
 }])
 

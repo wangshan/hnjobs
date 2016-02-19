@@ -17,7 +17,8 @@
                         <span class="glyphicon glyphicon-home"
                             aria-hidden="true"></span> Home</a>
                     </li>
-                    <li><a ui-sref="app.aboutus">
+                    <li><a ui-sref="app.aboutus2"
+                        data-toggle="modal" data-target="#aboutusModal">
                         <span class="glyphicon glyphicon-info-sign"
                             aria-hidden="true"></span> About</a>
                     </li>
@@ -25,48 +26,14 @@
                         <i class="fa fa-envelope-o"></i> Contact</a>
                     </li>
                 </ul>
-                <!--
-                <div class="form-horizontal header-element col-xs-12 col-sm-6 pull-right">
-                    <div class="form-group form-group-sm">
-                        <div class="col-xs-12 col-sm-10">
-                            <input type="text"
-                                class="form-control"
-                                id="searchInput"
-                                placeholder="type word or regex..." 
-                                ng-model="search.searchPattern">
-                        </div>
-                        <label class="control-label col-xs-12 col-sm-2" for="searchInput">
-                            Search
-                        </label>
-                    </div>
-                </div>
-                -->
                 <span class="col-xs-12 col-sm-2 header-element addthis_sharing_toolbox pull-right">
                 </span>
             </div>
         </div>
     </nav>         
                
+    <div ng-include="'static/templates/aboutus2.html'"></div>
 <!-- 
     <header class="jumbotron">
 -->
 
-        <!-- Main component for a primary marketing message or call to action -->
-<!-- 
-        <div class="container">
-            <div class="row row-header">
-                <div class="col-xs-12 col-sm-8">
-                    <h1>HNJobs</h1>
-                    <p style="padding:10px;"></p>
-                    <p>Jobs posted on HackerNews, including WhoIsHiring, 
-                    HN Jobs post, and Freelance jobs</p>
-                </div>
-                <div class="col-xs-12 col-sm-2">
-                    <p style="padding:10px;"></p>
-                </div>
-                <div class="col-xs-12 col-sm-2">
-                </div>
-            </div>
-        </div>
-    </header>
--->
