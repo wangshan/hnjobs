@@ -22,7 +22,8 @@
                                 <input type="text"
                                     class="form-control search-query"
                                     placeholder="word or regex..."
-                                    ng-model="search.searchPattern"/>
+                                    ng-model="search.searchPattern"
+                                    ng-change="updateSearchPattern()"/>
                                 <span class="input-group-btn">
                                     <button type="submit"
                                         class="btn btn-primary"> Search
@@ -43,7 +44,7 @@
                             role="tab">{{ source }}</a>
                     </li>
                     <li role="presentation" class="dropdown">
-                        <!-- FIXME: how to make this script work? -->
+                        <!-- FIXME: how to make this script work?
                         <script type="text/javascript">
                             $('.dropdown-menu li a').on('click', function() {
                                 var selText = $(this).text();
@@ -51,6 +52,7 @@
                                 $('.dropdown-toggle').html(selText + '<span class="caret"></span>');    
                             });
                         </script>
+                        -->
                         <a role="button" class="dropdown-toggle"
                             type="button"
                             id="month"

@@ -47,21 +47,24 @@ app.filter('regex', function() {
     };
 });
 
-app.directive('scroller', ['$timeout', 'rememberService', function($timeout, rememberService) {
+app.directive('scroller', ['$timeout', 'rememberPositionService',
+    function($timeout, rememberPositionService) {
     return {
         restrict: 'EA', // can be used as element or attribute
         scope: {}, // create own isolated scope
         link: function(scope, elem, attrs) {
-            var raw = elem[0];  // get raw element object to access its scrollTop property
-            
+            // get raw element object to access its scrollTop property
+            var raw = elem[0];              
+
             elem.bind('scroll', function() {
                 // remember where we are
-                rememberService.scrollTop = raw.scrollTop;
+                rememberPositionService.scrollTop = raw.scrollTop;
             });
 
-            // Need to wait until the digest cycle is complete to apply this property change to the element.
+            // Need to wait until the digest cycle is complete to apply this
+            // property change to the element.
             $timeout(function() {
-                raw.scrollTop = rememberService.scrollTop;
+                raw.scrollTop = rememberPositionService.scrollTop;
             });
         }
     };
@@ -108,6 +111,15 @@ app.controller('HnJobsController',
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
+
+    if (!angular.isUndefined(cacheStateService.searchPattern)) {
+        $scope.search.searchPattern = cacheStateService.searchPattern;
+        console.log("restore searchPattern, ", $scope.search.searchPattern);
+    }
+
+    $scope.updateSearchPattern = function() {
+        cacheStateService.setData($scope.search.searchPattern);
+    }
 
     // must match source field in the models
     $scope.sourceTypes = [
@@ -160,7 +172,10 @@ app.controller('HnJobsController',
     /* TODO: make this a directive?
     $(".dropdown-menu li a").click(function () {
         var selText = $(this).text();
-        $(this).closest('div').find('button[data-toggle="dropdown"]').html(selText + ' <span class="caret"></span>');
+        $(this)
+            .closest('div')
+            .find('button[data-toggle="dropdown"]')
+            .html(selText + ' <span class="caret"></span>');
         $(this).closest('.dropdown').removeClass("open");
         return false;
     });
@@ -256,7 +271,9 @@ app.controller('HnJobsController',
                 
 }])
 
-.controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
+.controller('FeedbackController',
+    ['$scope', 'feedbackFactory',
+    function($scope, feedbackFactory) {
     
     $scope.sendFeedback = function() {
         
@@ -278,7 +295,8 @@ app.controller('HnJobsController',
 }])
 
 .controller('JobDetailsController',
-    ['$scope', '$stateParams', '$location', 'hnJobsFactory', function($scope, $stateParams, $location, hnJobsFactory) {
+    ['$scope', '$stateParams', '$location', 'hnJobsFactory',
+    function($scope, $stateParams, $location, hnJobsFactory) {
 
     $scope.showJobDetails = false;
     $scope.share = {
@@ -312,7 +330,8 @@ app.controller('HnJobsController',
     };
 }])
 
-.controller('AboutController', ['$scope', '$stateParams', function($scope, $stateParams) {
+.controller('AboutController',
+        ['$scope', '$stateParams', function($scope, $stateParams) {
     
 }])
 

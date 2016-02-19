@@ -2,7 +2,8 @@
 
 angular.module('startupJobsApp')
         .constant("baseURL", "http://localhost:3000/api/")
-        .service('hnJobsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+        .service('hnJobsFactory',
+            ['$resource', 'baseURL', function($resource, baseURL) {
             this.getHnJobs = function() {
                 return $resource(baseURL + "jobs/:id", null, {
                         'update': {
@@ -30,7 +31,8 @@ angular.module('startupJobsApp')
             };
         }])
 
-        .service('dateLabelsFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+        .service('dateLabelsFactory',
+            ['$resource', 'baseURL', function($resource, baseURL) {
             var parseResponseDates = function(response) {
                 // convert response.data to an array of Date
                 var dates = [];
@@ -63,18 +65,24 @@ angular.module('startupJobsApp')
             };
         }])
 
-        .service('rememberService', function() {
+        .service('rememberPositionService', function() {
             return {
                 scrollTop: undefined
             };
         })
 
         .service('cacheStateService', function() {
+            var setData = function(newPattern) {
+                model.searchPattern = newPattern;
+                console.log("searchPattern updated:", newPattern);
+            }
+
             var model = {
                 tab: 0,
                 filtType: undefined,
                 filtMonth: undefined,
                 searchPattern: undefined,
+                setData: setData,
             };
 
             return model;
