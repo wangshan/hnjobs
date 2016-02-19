@@ -331,9 +331,9 @@ app.controller('HnJobsController',
     };
 }])
 
-.controller('AboutController',
+.controller('AnalyticsController',
         ['$scope', '$stateParams', function($scope, $stateParams) {
-    console.log("AboutController");
+    console.log("AnalyticsController");
     
 }])
 
