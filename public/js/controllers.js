@@ -130,9 +130,9 @@ app.controller('HnJobsController',
         ];
 
     // true shows job post, otherwise show candidate post
-    $scope.showJob = true;
+    $scope.showJob = cacheStateService.showJob;
 
-    if (!cacheStateService.filtType) {
+    if (angular.isUndefined(cacheStateService.filtType)) {
         cacheStateService.filtType = $scope.sourceTypes[0];
     }
     $scope.filtType = cacheStateService.filtType;
@@ -229,9 +229,10 @@ app.controller('HnJobsController',
             //$scope.filtType = $scope.sourceTypes[setTab];
             cacheStateService.filtType = $scope.sourceTypes[setTab];
             // assumes the first two sources are for hiring
-            $scope.showJob = (setTab < 2);
+            cacheStateService.showJob = (setTab < 2);
         }
         $scope.filtType = cacheStateService.filtType;
+        $scope.showJob = cacheStateService.showJob;
     };
 
     $scope.isSelected = function(checkTab) {

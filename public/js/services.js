@@ -79,6 +79,7 @@ angular.module('startupJobsApp')
 
             var model = {
                 tab: 0,
+                showJob: true, // show jobs or candidates
                 filtType: undefined,
                 filtMonth: undefined,
                 searchPattern: undefined,
