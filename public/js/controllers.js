@@ -272,27 +272,10 @@ app.controller('HnJobsController',
                 
 }])
 
-.controller('FeedbackController',
-    ['$scope', 'feedbackFactory',
-    function($scope, feedbackFactory) {
+.controller('AnalyticsController',
+        ['$scope', '$stateParams', function($scope, $stateParams) {
+    console.log("AnalyticsController");
     
-    $scope.sendFeedback = function() {
-        
-        console.log($scope.feedback);
-        
-        if ($scope.feedback.agree && ($scope.feedback.email == "")) {
-            $scope.invalidChannelSelection = true;
-            console.log('incorrect');
-        }
-        else {
-            $scope.invalidChannelSelection = false;
-            feedbackFactory.getFeedback().save($scope.feedback);
-            $scope.feedback = { firstName: "", lastName: "", agree: false, email: "" };
-            $scope.feedback.email = "";
-            $scope.feedbackForm.$setPristine();
-            console.log($scope.feedback);
-        }
-    };
 }])
 
 .controller('JobDetailsController',
@@ -329,12 +312,6 @@ app.controller('HnJobsController',
 
         window.location.href = link;
     };
-}])
-
-.controller('AnalyticsController',
-        ['$scope', '$stateParams', function($scope, $stateParams) {
-    console.log("AnalyticsController");
-    
 }])
 
 ;

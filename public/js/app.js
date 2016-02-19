@@ -24,6 +24,15 @@ var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
                 }
             }
         })
+        .state('app.analytics', {
+            url: 'analytics',
+            views: {
+                'content@': {
+                    templateUrl : 'static/templates/analytics.html',
+                    controller  : 'AnalyticsController'
+               }
+            }
+        })
         .state('app.aboutus', {
             url: 'aboutus',
             views: {
@@ -37,7 +46,6 @@ var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
             views: {
                 'content@': {
                     templateUrl : 'static/templates/contactus.html',
-                    controller  : 'ContactController'
                 }
             }
         })
@@ -47,15 +55,6 @@ var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
                 'content@': {
                     templateUrl : 'static/templates/jobdetails.html',
                     controller  : 'JobDetailsController'
-               }
-            }
-        })
-        .state('app.analytics', {
-            url: 'analytics',
-            views: {
-                'content@': {
-                    templateUrl : 'static/templates/analytics.html',
-                    controller  : 'AnalyticsController'
                }
             }
         });
