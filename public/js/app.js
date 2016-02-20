@@ -41,14 +41,6 @@ var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
                 }
             }
         })
-        .state('app.contactus', {
-            url:'contactus',
-            views: {
-                'content@': {
-                    templateUrl : 'static/templates/contactus.html',
-                }
-            }
-        })
         .state('app.jobdetails', {
             url: ':id',
             views: {

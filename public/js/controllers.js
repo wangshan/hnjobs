@@ -259,19 +259,6 @@ app.controller('HnJobsController',
 
 }])
 
-.controller('ContactController', ['$scope', function($scope) {
-
-    $scope.feedback = {
-        firstName: "",
-        lastName: "",
-        agree: false,
-        email: "" 
-    };
-    
-    $scope.invalidChannelSelection = false;
-                
-}])
-
 .controller('AnalyticsController',
         ['$scope', '$stateParams', function($scope, $stateParams) {
     console.log("AnalyticsController");
