@@ -226,7 +226,6 @@ app.controller('HnJobsController',
             cacheStateService.filtType = null;
         }
         else {
-            //$scope.filtType = $scope.sourceTypes[setTab];
             cacheStateService.filtType = $scope.sourceTypes[setTab];
             // assumes the first two sources are for hiring
             cacheStateService.showJob = (setTab < 2);
