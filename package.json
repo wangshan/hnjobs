@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "bower": "^1.7.7",
     "cron": "^1.1.0",
     "express": "^4.13.3",
     "gulp": "^3.9.0",
@@ -15,6 +16,6 @@
     "yargs": "^4.1.0"
   },
   "scripts": {
-      "postinstall": "bower install"
+    "postinstall": "bower install"
   }
 }
