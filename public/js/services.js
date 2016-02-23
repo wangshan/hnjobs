@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('startupJobsApp')
-        .constant("baseURL", "http://localhost:3000/api/")
+        .constant("baseURL", "https://whispering-headland-40528.herokuapp.com/api/")
         .service('hnJobsFactory',
             ['$resource', 'baseURL', function($resource, baseURL) {
             this.getHnJobs = function() {
@@ -88,13 +88,5 @@ angular.module('startupJobsApp')
 
             return model;
         })
-
-        .service('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-            /*
-            this.getFeedback = function() {
-                return $resource(baseURL + "feedback/:id", null, {'save':{method: 'POST'}}); 
-            }
-            */
-        }])
 
 ;
