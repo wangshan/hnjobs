@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('startupJobsApp')
-        .constant("baseURL", "https://whispering-headland-40528.herokuapp.com/api/")
+        .constant("baseURL", "https://www.hnjobs.io/api/")
         .service('hnJobsFactory',
             ['$resource', 'baseURL', function($resource, baseURL) {
             this.getHnJobs = function() {
