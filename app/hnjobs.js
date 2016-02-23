@@ -147,12 +147,14 @@ if (argv.m == 'oneoff') {
     retrieve();
 }
 else if (argv.m == 'daemon') {
-    var cronWhoIsHiring = new CronJob('00 03 21 * * *', function() {
-        retrieve();
-    },
-    start: true,
-    runOnInit: true,
-    timeZone);
+    var cronWhoIsHiring = new CronJob({
+        cronTime: '00 03 21 * * *',
+        onTick: function() {
+            retrieve();
+        },
+        start: true,
+        runOnInit: true
+    });
 }
 
 //var cronGetJob = new CronJob('*/30 * * * * *', function() {
