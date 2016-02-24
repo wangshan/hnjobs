@@ -32,13 +32,13 @@ var requestById = function(type, id, onEnd) {
     });
 }
 
-var topics = [
-    { title: "hiring"     , text: "Ask HN: Who is hiring.*" },
-    { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" },
-    { title: "freelance"  , text: "Ask HN: Freelancer.*" },
-    ];
-
 var parseWhosHiring = function(fileName, data, filter) {
+    var topics = [
+        { title: "hiring"     , text: "Ask HN: Who is hiring.*" },
+        { title: "wantshired" , text: "Ask HN: Who wants to be hired.*" },
+        { title: "freelance"  , text: "Ask HN: Freelancer.*" },
+        ];
+
     var foundMatch = false;
     if (data.title) {
         for (var i = 0; i < topics.length; ++i) {

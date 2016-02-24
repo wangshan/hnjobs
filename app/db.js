@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var confg = require('./config');
 
-mongoose.connect('mongodb://dbuser:dbpassword@ds013908.mongolab.com:13908/heroku_g44fx66v',
+mongoose.connect(config.database,
         function(error) {
             if (error) {
                 console.log('failed to connect mongodb', error);

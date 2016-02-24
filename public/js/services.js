@@ -1,11 +1,10 @@
 'use strict';
 
-angular.module('startupJobsApp')
-        .constant("baseURL", "http://www.hnjobs.io/api/")
+angular.module('startupJobsApp', ['app.config'])
         .service('hnJobsFactory',
-            ['$resource', 'baseURL', function($resource, baseURL) {
+            ['$resource', 'apiEndpoint', function($resource, apiEndpoint) {
             this.getHnJobs = function() {
-                return $resource(baseURL + "jobs/:id", null, {
+                return $resource(apiEndpoint + "jobs/:id", null, {
                         'update': {
                             method: 'PUT'
                         },
@@ -18,7 +17,7 @@ angular.module('startupJobsApp')
             };
 
             this.getHnCandidates = function() {
-                return $resource(baseURL + "candidates/:id", null, {
+                return $resource(apiEndpoint + "candidates/:id", null, {
                         'update': {
                             method: 'PUT'
                         },
@@ -32,7 +31,7 @@ angular.module('startupJobsApp')
         }])
 
         .service('dateLabelsFactory',
-            ['$resource', 'baseURL', function($resource, baseURL) {
+            ['$resource', 'apiEndpoint', function($resource, apiEndpoint) {
             var parseResponseDates = function(response) {
                 // convert response.data to an array of Date
                 var dates = [];
@@ -51,7 +50,7 @@ angular.module('startupJobsApp')
             };
 
             this.getDateLabels = function() {
-                return $resource(baseURL + "datelabels/:id", null, {
+                return $resource(apiEndpoint + "datelabels/:id", null, {
                     'query': {
                        method: 'GET',
                        cache: true,
