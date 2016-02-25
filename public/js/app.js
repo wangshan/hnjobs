@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('startupJobsApp', ['ui.router', 'ngResource'])
+var app = angular.module('startupJobsApp', ['ui.router', 'ngResource', 'app.config'])
 
 // add this to avoid # in the url, also need to add <base href='/'> in html
 //    app.config(["$locationProvider", function($locationProvider) {
