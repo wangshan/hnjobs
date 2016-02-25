@@ -17,6 +17,7 @@
     "yargs": "^4.1.0"
   },
   "scripts": {
+    "build": "gulp",
     "postinstall": "bower install"
   }
 }

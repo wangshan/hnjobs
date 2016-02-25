@@ -13,7 +13,7 @@ gulp.task('config', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('js', function() {
+gulp.task('js', ['config'], function() {
     gulp.src('public/js/*.js')
         .pipe(concat('app.js'))
         .pipe(gulp.dest('public/dist'));
@@ -23,3 +23,4 @@ gulp.task('watch:js', ['js'], function() {
     gulp.watch('public/js/*.js', ['js']);
 });
 
+gulp.task('default', ['js']);
