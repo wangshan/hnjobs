@@ -17,8 +17,7 @@ gulp.task('config', function() {
     var environment = process.env.NODE_ENV || 'development';
     gulp.src('public/config/' + environment + '.json')
         .pipe(ngConstant({
-            name: 'app.config',
-            wrap: 'amd'
+            name: 'app.config'
         }))
         .pipe(concat('public/js/config.js'))
         .pipe(gulp.dest('.'));

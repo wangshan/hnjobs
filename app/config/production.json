@@ -1,4 +1,3 @@
 {
-    'database': 'mongodb://dbuser:dbpassword@ds013908.mongolab.com:13908/heroku_g44fx66v',
-    'server': 'http://www.hnjobs.io',
+    "database": "mongodb://dbuser:dbpassword@ds013908.mongolab.com:13908/heroku_g44fx66v"
 }

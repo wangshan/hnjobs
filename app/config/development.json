@@ -1,4 +1,3 @@
 {
-    'database': 'mongodb://localhost/hnjobs',
-    'server': 'localhost:3000',
+    "database": "mongodb://localhost/hnjobs"
 }
