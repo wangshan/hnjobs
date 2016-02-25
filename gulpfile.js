@@ -10,18 +10,18 @@ gulp.task('config', function() {
             name: 'app.config'
         }))
         .pipe(concat('public/js/config.js'))
-        .pipe(gulp.dest('.'));
+        .pipe(gulp.dest('.'))
         .on('error', function() { });
 });
 
-gulp.task('js', ['config'], function() {
+gulp.task('build', ['config'], function() {
     gulp.src(['public/js/config.js', 'public/js/*.js'])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('public/dist'));
 });
 
-gulp.task('watch:js', ['js'], function() {
-    gulp.watch('public/js/*.js', ['js']);
+gulp.task('watch:build', ['build'], function() {
+    gulp.watch('public/js/*.js', ['build']);
 });
 
-gulp.task('default', ['config', 'js']);
+gulp.task('default', 'build');
