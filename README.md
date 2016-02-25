@@ -1,13 +1,13 @@
 hnjobs
 ========
 
-Web app for displaying jobs from hackernews
+Web app for displaying jobs from HackerNews
 
 ## Installation
 
 `npm install`
 
-`bower install`
-
-
 ## Usage
+
+node app/hnjobs.js &
+node app/server.js
