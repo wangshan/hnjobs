@@ -23,4 +23,4 @@ gulp.task('watch:js', ['js'], function() {
     gulp.watch('public/js/*.js', ['js']);
 });
 
-gulp.task('default', ['js']);
+gulp.task('default', ['config', 'js']);
