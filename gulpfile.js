@@ -11,10 +11,11 @@ gulp.task('config', function() {
         }))
         .pipe(concat('public/js/config.js'))
         .pipe(gulp.dest('.'));
+        .on('error', function() { });
 });
 
 gulp.task('js', ['config'], function() {
-    gulp.src('public/js/*.js')
+    gulp.src(['public/js/config.js', 'public/js/*.js'])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('public/dist'));
 });
