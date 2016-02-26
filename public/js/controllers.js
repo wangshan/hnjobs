@@ -112,8 +112,8 @@ app.controller('HnJobsController',
     $scope.message = "Loading ...";
     $scope.search = {};
 
-    if (!angular.isUndefined(cacheStateService.searchPattern)) {
-        $scope.search.searchPattern = cacheStateService.searchPattern;
+    if (!angular.isUndefined(cacheStateService.userData.searchPattern)) {
+        $scope.search.searchPattern = cacheStateService.userData.searchPattern;
         console.log("restore searchPattern, ", $scope.search.searchPattern);
     }
 
@@ -130,12 +130,12 @@ app.controller('HnJobsController',
         ];
 
     // true shows job post, otherwise show candidate post
-    $scope.showJob = cacheStateService.showJob;
+    $scope.showJob = cacheStateService.userData.showJob;
 
-    if (angular.isUndefined(cacheStateService.filtType)) {
-        cacheStateService.filtType = $scope.sourceTypes[0];
+    if (angular.isUndefined(cacheStateService.userData.filtType)) {
+        cacheStateService.userData.filtType = $scope.sourceTypes[0];
     }
-    $scope.filtType = cacheStateService.filtType;
+    $scope.filtType = cacheStateService.userData.filtType;
     console.log("initially, filtType=", $scope.filtType);
 
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
@@ -181,21 +181,22 @@ app.controller('HnJobsController',
     });
     */
 
-    $scope.filtMonth = cacheStateService.filtMonth;
+    $scope.filtMonth = cacheStateService.userData.filtMonth;
     console.log("initially, filtMonth=", $scope.filtMonth);
 
-    // TODO: this should be removed once dropdown is fixed properly
     $scope.getFiltMonth = function() {
-        if (angular.isUndefined(cacheStateService.filtMonth)) {
+        if (angular.isUndefined(cacheStateService.userData.filtMonth)) {
+            // wait for dateLabels to be populated
             $scope.$watch(
                 function() {
                     return $scope.dateLabels; },
                 function() {
-                    cacheStateService.filtMonth = $scope.dateLabels[0];
-                    console.log("watch, ", $scope.dateLabels[0]); }
+                    cacheStateService.userData.filtMonth = $scope.dateLabels[0];
+                    console.log("watch", $scope.dateLabels[0]); }
                     );
         }
-        $scope.filtMonth = cacheStateService.filtMonth;
+        $scope.filtMonth = cacheStateService.userData.filtMonth;
+        console.info("getFiltMonth", $scope.filtMonth);
 
         if ($scope.filtMonth == null) {
             return "All";
@@ -207,12 +208,12 @@ app.controller('HnJobsController',
 
     $scope.selectMonth = function(setMonth) {
         if (setMonth == 0) {
-            cacheStateService.filtMonth = null;
+            cacheStateService.userData.filtMonth = null;
         }
         else {
-            cacheStateService.filtMonth = $scope.dateLabels[setMonth-1];
+            cacheStateService.userData.filtMonth = $scope.dateLabels[setMonth-1];
         }
-        $scope.filtMonth = cacheStateService.filtMonth;
+        $scope.filtMonth = cacheStateService.userData.filtMonth;
     };
 
     $scope.filterByMonth = function(job) {
@@ -221,21 +222,21 @@ app.controller('HnJobsController',
     }
 
     $scope.selectSourceType = function(setTab) {
-        cacheStateService.tab = setTab;
+        cacheStateService.userData.tab = setTab;
         if (setTab >= $scope.sourceTypes.length) {
-            cacheStateService.filtType = null;
+            cacheStateService.userData.filtType = null;
         }
         else {
-            cacheStateService.filtType = $scope.sourceTypes[setTab];
+            cacheStateService.userData.filtType = $scope.sourceTypes[setTab];
             // assumes the first two sources are for hiring
-            cacheStateService.showJob = (setTab < 2);
+            cacheStateService.userData.showJob = (setTab < 2);
         }
-        $scope.filtType = cacheStateService.filtType;
-        $scope.showJob = cacheStateService.showJob;
+        $scope.filtType = cacheStateService.userData.filtType;
+        $scope.showJob = cacheStateService.userData.showJob;
     };
 
     $scope.isSelected = function(checkTab) {
-        return (cacheStateService.tab === checkTab);
+        return (cacheStateService.userData.tab === checkTab);
     };
 
     $scope.filterBySource = function(job) {

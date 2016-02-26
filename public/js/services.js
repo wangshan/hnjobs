@@ -70,22 +70,58 @@ angular.module('startupJobsApp')
             };
         })
 
-        .service('cacheStateService', function() {
-            var setData = function(newPattern) {
-                model.searchPattern = newPattern;
-                console.log("searchPattern updated:", newPattern);
-            }
+        .service('cacheStateService', ['$window', '$rootScope',
+            function($window, $rootScope) {
 
-            var model = {
+            var initialUserData = {
                 tab: 0,
                 showJob: true, // show jobs or candidates
                 filtType: undefined,
                 filtMonth: undefined,
                 searchPattern: undefined,
+            }
+
+            var model = {
+                userData: undefined,
                 setData: setData,
             };
 
+            var saveData = function() {
+                $window.sessionStorage.userData = angular.toJson(model.userData);
+                console.log("to save data");
+            }
+
+            var restoreData = function() {
+                var data = angular.fromJson($window.sessionStorage.userData);
+                // convert from string
+                data.filtMonth = new Date(data.filtMonth);
+                model.userData = data;
+                console.log("to restore data");
+            }
+
+            // restore data on initialization
+            if ($window.sessionStorage.userData) {
+                restoreData();
+            }
+            else {
+            }
+
+            // restore data on initialization
+            if ($window.sessionStorage.userData) {
+                restoreData();
+            }
+            else {
+                model.userData = initialUserData; 
+            }
+
+            var setData = function(newPattern) {
+                model.userData.searchPattern = newPattern;
+                console.log("searchPattern updated:", newPattern);
+            }
+
+            $rootScope.$on('SaveStateEvent', saveData);
+
             return model;
-        })
+        }])
 
 ;
