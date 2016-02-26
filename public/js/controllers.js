@@ -135,6 +135,7 @@ app.controller('HnJobsController',
 
     $scope.loadMore = function() {
         $scope.totalDisplayed += 50;
+        cacheStateService.userData.totalDisplayed = $scope.totalDisplayed;
     }
 
     if (angular.isUndefined(cacheStateService.userData.filtType)) {
