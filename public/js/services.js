@@ -79,6 +79,7 @@ angular.module('startupJobsApp')
             filtType: undefined,
             filtMonth: undefined,
             searchPattern: undefined,
+            totalDisplayed: 50,
         }
 
         var model = {
@@ -97,13 +98,6 @@ angular.module('startupJobsApp')
             data.filtMonth = new Date(data.filtMonth);
             model.userData = data;
             console.log("to restore data");
-        }
-
-        // restore data on initialization
-        if ($window.sessionStorage.userData) {
-            restoreData();
-        }
-        else {
         }
 
         // restore data on initialization

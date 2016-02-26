@@ -131,6 +131,11 @@ app.controller('HnJobsController',
 
     // true shows job post, otherwise show candidate post
     $scope.showJob = cacheStateService.userData.showJob;
+    $scope.totalDisplayed = cacheStateService.userData.totalDisplayed;
+
+    $scope.loadMore = function() {
+        $scope.totalDisplayed += 50;
+    }
 
     if (angular.isUndefined(cacheStateService.userData.filtType)) {
         cacheStateService.userData.filtType = $scope.sourceTypes[0];

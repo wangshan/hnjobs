@@ -81,7 +81,7 @@
                     <ul class="media-list tab-pane fade in active">
                         <li class="media"
                             ng-show="showJob"
-                            ng-repeat="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern">
+                            ng-repeat="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
                                     <span class="label label-info">{{job.monthPosted}}</span>
@@ -103,7 +103,7 @@
                         </li>
                         <li class="media"
                             ng-show="!showJob"
-                            ng-repeat="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern">
+                            ng-repeat="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
                             <div class="media-body">
                                 <h3 class="media-heading">{{candidate.name}}
                                     <span class="label label-info">{{candidate.monthPosted}}</span>
@@ -117,6 +117,8 @@
                         </li>
                     </ul>
                 </div>
+                <br>
+                <button class="btn btn-warning btn-block" role="button" ng-click="loadMore()">Load More</button>
             </div>
 
         </div>
