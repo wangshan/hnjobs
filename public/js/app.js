@@ -55,6 +55,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 })
 
 .run(function($window, $rootScope) {
+    // before leaving this page, signal all event listeners to save their data
     $window.onbeforeunload = function(event) {
         console.log("broadcasting save state event");
         $rootScope.$broadcast('SaveStateEvent');
