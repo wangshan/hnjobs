@@ -250,17 +250,19 @@ app.controller('HnJobsController',
             || $scope.filtType == job.source;
     }
 
+    // TODO: save this in a service so the controller don't have to query the 
+    // api again
     $scope.share = {
-        jobId: "",
-        jobContent: "",
+        postId: "",
+        content: "",
         email: "",
         subject: "",
     };
 
-    $scope.shareJob = function(job) {
-        $scope.share.jobId = job.id;
-        $scope.share.jobContent = job.description;
-        console.log(job.id);
+    $scope.sharePost = function(post) {
+        $scope.share.postId = post.id;
+        $scope.share.content = post.description;
+        console.log("to share: ", post.id);
     };
 
 }])
@@ -272,22 +274,26 @@ app.controller('HnJobsController',
 }])
 
 .controller('JobDetailsController',
-    ['$scope', '$stateParams', '$location', 'hnJobsFactory',
-    function($scope, $stateParams, $location, hnJobsFactory) {
+    ['$scope', '$stateParams', '$location', 'hnJobsFactory', 'cacheStateService',
+    function($scope, $stateParams, $location, hnJobsFactory, cacheStateService) {
 
-    $scope.showJobDetails = false;
     $scope.share = {
-        jobId: "",
+        postId: "",
         email: "",
-        jobContent: "",
+        content: "",
         subject: "",
     };
 
-    hnJobsFactory.getHnJobs().get({id: parseInt($stateParams.id, 10)})
-    .$promise.then(
+    $scope.isJob = cacheStateService.userData.showJob;
+    var futurePost = $scope.isJob
+        ? hnJobsFactory.getHnJobs().get({id: parseInt($stateParams.id, 10)})
+        : hnJobsFactory.getHnCandidates().get({id: parseInt($stateParams.id, 10)});
+
+    console.log("$scope.isJob=", $scope.isJob);
+
+    futurePost.$promise.then(
         function(response) { // the response is the actual data
-            $scope.share.jobContent = response.description;
-            $scope.showJobDetails = true;
+            $scope.share.content = response.description;
         },
         function(response) { // but here is the response object, why?
             $scope.message = "Failed to get jobs\n"
@@ -296,12 +302,12 @@ app.controller('HnJobsController',
     );
 
     $scope.sendEmail = function() {
-        console.log($scope.share.jobContent);
+        //console.log($scope.share.content);
         var link = "mailto:"+ $scope.share.email
              + "?subject= " + escape($scope.share.subject)
              + "&body=" + encodeURIComponent($location.absUrl());
              // NOTE: can't send html in mailto body, so this won't work!
-             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.jobContent));
+             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.content));
 
         window.location.href = link;
     };

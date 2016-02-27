@@ -94,7 +94,7 @@
                                     <span class="pull-right">
                                         <a type="button" class="btn btn-primary"
                                             ui-sref="app.jobdetails({id: job.id})"
-                                            ng-click="shareJob(job)">Share
+                                            ng-click="sharePost(job)">Share
                                         </a>
                                     </span>
                                 </h3>
@@ -111,6 +111,12 @@
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{candidate.jobType}}</span>
                                     <span class="badge">{{candidate.time | date}}</span>
+                                    <span class="pull-right">
+                                        <a type="button" class="btn btn-primary"
+                                            ui-sref="app.jobdetails({id: candidate.id})"
+                                            ng-click="sharePost(candidate)">Share
+                                        </a>
+                                    </span>
                                 </h3>
                                 <p ng-bind-html="candidate.description | asHtml"></p>
                             </div>
