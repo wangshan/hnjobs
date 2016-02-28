@@ -204,7 +204,7 @@ app.controller('HnJobsController',
         $scope.filtMonth = cacheStateService.userData.filtMonth;
         console.info("getFiltMonth", $scope.filtMonth);
 
-        if ($scope.filtMonth == null) {
+        if ($scope.filtMonth === null) {
             return "All";
         }
         else {
@@ -213,7 +213,7 @@ app.controller('HnJobsController',
     }
 
     $scope.selectMonth = function(setMonth) {
-        if (setMonth == 0) {
+        if (setMonth === 0) {
             cacheStateService.userData.filtMonth = null;
         }
         else {
@@ -223,8 +223,8 @@ app.controller('HnJobsController',
     };
 
     $scope.filterByMonth = function(job) {
-        return $scope.filtMonth == null
-            || $scope.getMonthYearText($scope.filtMonth) == job.monthPosted;
+        return $scope.filtMonth === null
+            || $scope.getMonthYearText($scope.filtMonth) === job.monthPosted;
     }
 
     $scope.selectSourceType = function(setTab) {
@@ -246,8 +246,8 @@ app.controller('HnJobsController',
     };
 
     $scope.filterBySource = function(job) {
-        return $scope.filtType == null
-            || $scope.filtType == job.source;
+        return $scope.filtType === null
+            || $scope.filtType === job.source;
     }
 
     // TODO: save this in a service so the controller don't have to query the 

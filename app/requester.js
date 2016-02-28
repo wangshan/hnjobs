@@ -95,13 +95,13 @@ String.prototype.decodeHTML = function() {
 
 
 var savePostToDatabase = function(post, topic, monthPosted) {
-    if (topic.title == "hiring") {
+    if (topic.title === "hiring") {
         saveJobToDatabase(post, "Who Is Hiring", monthPosted);
     }
-    else if (topic.title == "wantshired") {
+    else if (topic.title === "wantshired") {
         saveCandidateToDatabase(post, "Who Wants To Be Hired", monthPosted);
     }
-    else if (topic.title == "freelance" && post.text) {
+    else if (topic.title === "freelance" && post.text) {
         var seekingFreelancerRe = /SEEKING FREELANCER/gi;
         var seekingWorkRe = /SEEKING WORK/gi;
         if (seekingFreelancerRe.test(post.text)) {
@@ -251,7 +251,7 @@ var getWhoIsHiring = function(fileName, filter) {
         var postIds = whoishiring.submitted;
         postIds.forEach(function(id) {
             //console.log("id: ", id);
-            if (_.indexOf(obsoleteIds, id) == -1) {
+            if (_.indexOf(obsoleteIds, id) === -1) {
                 requestById("item/", id, function(data) {
                     parseWhosHiring(fileName, data, filter);
                 });

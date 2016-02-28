@@ -31,8 +31,8 @@ var getPrevMonthYear = function(date) {
         console.log("getPrevMonthYear, parameter is not a date: ", date);
         return null;
     }
-    var prevMonth = date.getMonth() == 0 ? 11 : date.getMonth()-1;
-    var prevYear = date.getMonth() == 0 ? date.getFullYear()-1 : date.getFullYear();
+    var prevMonth = date.getMonth() === 0 ? 11 : date.getMonth()-1;
+    var prevYear = date.getMonth() === 0 ? date.getFullYear()-1 : date.getFullYear();
     var prevDate = new Date(date);
     prevDate.setMonth(prevMonth);
     prevDate.setFullYear(prevYear);

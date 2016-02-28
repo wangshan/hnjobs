@@ -79,15 +79,15 @@ var retrieve = function() {
             }
             else {
                 var latestIndex = _.findIndex(dateLabels, function(o) {
-                    return o.month == newDate;
+                    return o.month === newDate;
                 });
 
-                if (latestIndex == -1) {
-                    console.log("lastestIndex==-1, new date appeared");
+                if (latestIndex === -1) {
+                    console.log("lastestIndex===-1, new date appeared");
                     saveNewDateLabel(dateLabels, newDate);
                 }
-                else if (latestIndex == 0) {
-                    console.log("lastestIndex==0, current date is the latest");
+                else if (latestIndex === 0) {
+                    console.log("lastestIndex===0, current date is the latest");
                     // should only happen during developing
                     if (dateLabels.length < 4) {
                         var prevDate = MonthYear.getPrevMonthYear(newDate);
@@ -104,10 +104,10 @@ var retrieve = function() {
         });
 }
 
-if (argv.m == 'oneoff') {
+if (argv.m === 'oneoff') {
     retrieve();
 }
-else if (argv.m == 'daemon') {
+else if (argv.m === 'daemon') {
     var cronWhoIsHiring = new CronJob({
         cronTime: '00 03 21 * * *',
         onTick: function() {
