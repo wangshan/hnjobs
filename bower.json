@@ -21,6 +21,7 @@
     "font-awesome": "~4.5.0",
     "angular-resource": "~1.4.8",
     "angular-ui-router": "~0.2.15",
-    "angular-route": "~1.4.8"
+    "angular-route": "~1.4.8",
+    "chartist": "~0.9.7"
   }
 }

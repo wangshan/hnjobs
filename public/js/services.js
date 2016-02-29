@@ -16,8 +16,34 @@ angular.module('startupJobsApp')
                 }); 
         };
 
+        this.getHnJobsByMonth = function() {
+            return $resource(apiEndpoint + "jobs/months/:month", null, {
+                    'update': {
+                        method: 'PUT'
+                    },
+                    'query': {
+                        method: 'GET',
+                        cache: true,
+                        isArray: true
+                    }
+                }); 
+        };
+
         this.getHnCandidates = function() {
             return $resource(apiEndpoint + "candidates/:id", null, {
+                    'update': {
+                        method: 'PUT'
+                    },
+                    'query': {
+                        method: 'GET',
+                        cache: true,
+                        isArray: true
+                    },
+                }); 
+        };
+
+        this.getHnCandidatesByMonth = function() {
+            return $resource(apiEndpoint + "candidates/months/:month", null, {
                     'update': {
                         method: 'PUT'
                     },
@@ -115,4 +141,14 @@ angular.module('startupJobsApp')
         return model;
     }])
 
+    .service('chartService', function() {
+        var data = {
+            numPosts: {
+                labels: [],
+                series: [[], []],
+            },
+        };
+
+        return data;
+    })
 ;

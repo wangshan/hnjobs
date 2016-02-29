@@ -134,7 +134,7 @@ app.controller('HnJobsController',
     $scope.totalDisplayed = cacheStateService.userData.totalDisplayed;
 
     $scope.loadMore = function() {
-        $scope.totalDisplayed += 50;
+        $scope.totalDisplayed += 20;
         cacheStateService.userData.totalDisplayed = $scope.totalDisplayed;
     }
 
@@ -268,8 +268,73 @@ app.controller('HnJobsController',
 }])
 
 .controller('AnalyticsController',
-        ['$scope', '$stateParams', function($scope, $stateParams) {
-    console.log("AnalyticsController");
+    ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService',
+    function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService) {
+
+    var promises = [];
+
+    $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
+        function(response) {
+            $scope.dateLabels = response;
+            console.log("dateLabels.length=", $scope.dateLabels.length);
+
+            $scope.dateLabels.reverse().forEach(function(item) {
+                var monthStr = $scope.getMonthYearText(item);
+                console.log(monthStr);
+                chartService.numPosts.labels.push(monthStr);
+
+                [{ api: hnJobsFactory.getHnJobsByMonth, index: 0 },
+                 { api: hnJobsFactory.getHnCandidatesByMonth, index: 1 }
+                ].forEach(function(call) {
+                    promises.push(
+                        call.api().query({month: monthStr})
+                        .$promise
+                        .then(
+                            function(response) {
+                                var num = response.length;
+                                console.log(num);
+                                console.log(call.index);
+                                chartService.numPosts.series[call.index].push(num);
+                            },
+                            function(response) {
+                                chartService.numPosts.series[call.index].push(0);
+                            })
+                        );
+                });
+            });
+            
+            $q.all(promises).then(function() {
+                console.log("all promises ready");
+                console.log(chartService.numPosts.series);
+                $scope.charts = new Chartist.Bar('#chartNumPosts', chartService.numPosts);
+            });
+        },
+        function(response) {
+            $scope.message = "Failed to get date labels\n"
+                + "Error: " + response.status + " " + response.statusText;
+        }
+    );
+    
+    $scope.getMonthYearText = function(date) {
+        var getMonthName = function(date) {
+            var monthNames = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+            return monthNames[date.getMonth()];
+        }
+        return getMonthName(date) + " " + date.getFullYear();
+    }
     
 }])
 
