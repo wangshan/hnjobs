@@ -84,19 +84,22 @@
                             ng-repeat="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
                             <div class="media-body">
                                 <h3 class="media-heading">{{job.company}}
-                                    <span class="label label-info">{{job.monthPosted}}</span>
+                                    <span class="badge">{{job.monthPosted}}</span>
                                     <span class="badge">{{job.source}}</span>
                                     <!--show different color using ng-class based on job.type-->
                                     <span class="badge">{{job.type | printArray: '/'}}</span>
                                     <span class="badge">{{job.time | date}}</span>
                                     <span class="badge">{{job.remote | printBool: 'remote'}}</span>
                                     <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
-                                    <span class="pull-right">
-                                        <a type="button" class="btn btn-primary"
+                                    <h4>
+                                    <span class="pull-left">
+                                        <a type="button" class="label label-info"
                                             ui-sref="app.jobdetails({id: job.id})"
                                             ng-click="sharePost(job)">Share
                                         </a>
                                     </span>
+                                    <br>
+                                    </h4>
                                 </h3>
                                 <p ng-bind-html="job.description | asHtml"></p>
                             </div>
@@ -106,17 +109,17 @@
                             ng-repeat="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
                             <div class="media-body">
                                 <h3 class="media-heading">{{candidate.name}}
-                                    <span class="label label-info">{{candidate.monthPosted}}</span>
+                                    <span class="badge">{{candidate.monthPosted}}</span>
                                     <span class="badge">{{candidate.source}}</span>
-                                    <!--show different color using ng-class based on job.type-->
-                                    <span class="badge">{{candidate.jobType}}</span>
-                                    <span class="badge">{{candidate.time | date}}</span>
-                                    <span class="pull-right">
-                                        <a type="button" class="btn btn-primary"
+                                    <h4>
+                                    <span class="pull-left">
+                                        <a type="button" class="label label-info"
                                             ui-sref="app.jobdetails({id: candidate.id})"
                                             ng-click="sharePost(candidate)">Share
                                         </a>
                                     </span>
+                                    <br>
+                                    </h4>
                                 </h3>
                                 <p ng-bind-html="candidate.description | asHtml"></p>
                             </div>
