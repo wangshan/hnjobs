@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('startupJobsApp')
+angular.module('hnJobsApp')
     .service('hnJobsFactory',
         ['$resource', 'apiEndpoint', function($resource, apiEndpoint) {
         this.getHnJobs = function() {
