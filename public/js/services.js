@@ -90,6 +90,29 @@ angular.module('startupJobsApp')
         };
     }])
 
+    .service('dateMonthService', function() {
+        this.getMonthYearText = function(date) {
+            var getMonthName = function(date) {
+                var monthNames = [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ];
+                return monthNames[date.getMonth()];
+            }
+            return getMonthName(date) + " " + date.getFullYear();
+        };
+    })
+
     .service('rememberPositionService', function() {
         return {
             scrollTop: undefined
@@ -105,7 +128,7 @@ angular.module('startupJobsApp')
             filtType: undefined,
             filtMonth: undefined,
             searchPattern: undefined,
-            totalDisplayed: 50,
+            totalDisplayed: 20,
         }
 
         var model = {

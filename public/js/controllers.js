@@ -82,32 +82,9 @@ app.directive('back', ['$window', function($window) {
 }]);
 
 app.controller('HnJobsController',
-    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService',
-    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService) {
+    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService',
+    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService) {
     
-    // how to share these two functions between front and back end?
-
-    $scope.getMonthYearText = function(date) {
-        var getMonthName = function(date) {
-            var monthNames = [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-            ];
-            return monthNames[date.getMonth()];
-        }
-        return getMonthName(date) + " " + date.getFullYear();
-    }
-
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
@@ -208,7 +185,7 @@ app.controller('HnJobsController',
             return "All";
         }
         else {
-            return $scope.getMonthYearText($scope.filtMonth);
+            return dateMonthService.getMonthYearText($scope.filtMonth);
         }
     }
 
@@ -224,7 +201,7 @@ app.controller('HnJobsController',
 
     $scope.filterByMonth = function(job) {
         return $scope.filtMonth === null
-            || $scope.getMonthYearText($scope.filtMonth) === job.monthPosted;
+            || dateMonthService.getMonthYearText($scope.filtMonth) === job.monthPosted;
     }
 
     $scope.selectSourceType = function(setTab) {
@@ -262,25 +239,23 @@ app.controller('HnJobsController',
     $scope.sharePost = function(post) {
         $scope.share.postId = post.id;
         $scope.share.content = post.description;
-        console.log("to share: ", post.id);
+        console.info("to share: ", post.id);
     };
 
 }])
 
 .controller('AnalyticsController',
-    ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService',
-    function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService) {
+    ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService', 'dateMonthService',
+    function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService, dateMonthService) {
 
     var promises = [];
 
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) {
             $scope.dateLabels = response;
-            console.log("dateLabels.length=", $scope.dateLabels.length);
 
             $scope.dateLabels.reverse().forEach(function(item) {
-                var monthStr = $scope.getMonthYearText(item);
-                console.log(monthStr);
+                var monthStr = dateMonthService.getMonthYearText(item);
                 chartService.numPosts.labels.push(monthStr);
 
                 [{ api: hnJobsFactory.getHnJobsByMonth, index: 0 },
@@ -292,8 +267,6 @@ app.controller('HnJobsController',
                         .then(
                             function(response) {
                                 var num = response.length;
-                                console.log(num);
-                                console.log(call.index);
                                 chartService.numPosts.series[call.index].push(num);
                             },
                             function(response) {
@@ -314,27 +287,6 @@ app.controller('HnJobsController',
                 + "Error: " + response.status + " " + response.statusText;
         }
     );
-    
-    $scope.getMonthYearText = function(date) {
-        var getMonthName = function(date) {
-            var monthNames = [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-            ];
-            return monthNames[date.getMonth()];
-        }
-        return getMonthName(date) + " " + date.getFullYear();
-    }
     
 }])
 
@@ -367,7 +319,6 @@ app.controller('HnJobsController',
     );
 
     $scope.sendEmail = function() {
-        //console.log($scope.share.content);
         var link = "mailto:"+ $scope.share.email
              + "?subject= " + escape($scope.share.subject)
              + "&body=" + encodeURIComponent($location.absUrl());
