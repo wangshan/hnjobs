@@ -63,6 +63,7 @@ var parseWhosHiring = function(fileName, data, filter) {
         // optimization, don't repeately ask for old ids
         obsoleteIds.push(data.id);
     }
+    return foundMatch;
 }
 
 // for debugging only
@@ -253,7 +254,7 @@ var getWhoIsHiring = function(fileName, filter) {
             //console.log("id: ", id);
             if (_.indexOf(obsoleteIds, id) === -1) {
                 requestById("item/", id, function(data) {
-                    parseWhosHiring(fileName, data, filter);
+                    var found = parseWhosHiring(fileName, data, filter);
                 });
             }
         });

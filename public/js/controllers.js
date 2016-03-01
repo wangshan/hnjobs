@@ -88,6 +88,7 @@ app.controller('HnJobsController',
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
     $scope.search = {};
+    $scope.getMonthYearText = dateMonthService.getMonthYearText;
 
     if (!angular.isUndefined(cacheStateService.userData.searchPattern)) {
         $scope.search.searchPattern = cacheStateService.userData.searchPattern;
@@ -124,6 +125,9 @@ app.controller('HnJobsController',
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
             $scope.dateLabels = response;
+            $scope.dateLabels.forEach(function(dat) {
+                console.log("dateLabel=",dat);
+            })
         },
         function(response) { // but here is the response object
             $scope.message = "Failed to get date labels\n"
@@ -185,7 +189,7 @@ app.controller('HnJobsController',
             return "All";
         }
         else {
-            return dateMonthService.getMonthYearText($scope.filtMonth);
+            return $scope.getMonthYearText($scope.filtMonth);
         }
     }
 
@@ -201,7 +205,7 @@ app.controller('HnJobsController',
 
     $scope.filterByMonth = function(job) {
         return $scope.filtMonth === null
-            || dateMonthService.getMonthYearText($scope.filtMonth) === job.monthPosted;
+            || $scope.getMonthYearText($scope.filtMonth) === job.monthPosted;
     }
 
     $scope.selectSourceType = function(setTab) {

@@ -1,4 +1,4 @@
-var HnJobs = require('./requester');
+var Requester = require('./requester');
 var DateLabel = require('./models/date_label');
 var CronJob = require('cron').CronJob;
 var _ = require('lodash');
@@ -44,11 +44,11 @@ var saveNewDateLabel = function(dateLabels, newDate) {
                 // NOTE: whoishiring for the new month may have not been posted
                 // yet, but we remove the old one anyway, because frontend only
                 // shows one less months' data
-                if (dateLabels.length > 4) {
+                if (dateLabels.length > 5) {
                     dateLabels.shift();
                 }
-                else if (dateLabels.length < 4 || argv.f ) {
-                    // FIXME: if there are >= 4 date labels, even the actual
+                else if (dateLabels.length < 5 || argv.f ) {
+                    // FIXME: if there are >= 5 date labels, even the actual
                     // data is empty, we still only request the latest month,
                     // maybe I should try
                     // 1) check data by month and request if that
@@ -62,7 +62,7 @@ var saveNewDateLabel = function(dateLabels, newDate) {
 
             // will still get the posts even datelabels failed to save
             console.log("Getting " + newDate);
-            HnJobs.getWhoIsHiring('../data/whoishiring.txt', MonthYear.getMonthYearText(newDate));
+            Requester.getWhoIsHiring('../data/whoishiring.txt', MonthYear.getMonthYearText(newDate));
         });
 }
 
@@ -119,7 +119,7 @@ else if (argv.m === 'daemon') {
 }
 
 //var cronGetJob = new CronJob('*/30 * * * * *', function() {
-//    HnJobs.getJobs('../data/jobs.txt');
+//    Requester.getJobs('../data/jobs.txt');
 //}, null, true);
 //
 
