@@ -7,7 +7,8 @@ var app = angular.module('hnJobsApp', ['ui.router', 'ngResource', 'app.config'])
 //      $locationProvider.html5Mode(true);
 //    }]);
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider',
+    function($stateProvider, $urlRouterProvider) {
     $stateProvider
     .state('app', {
         url: '/',
@@ -52,14 +53,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
     });
 
     $urlRouterProvider.otherwise('/');
-})
+}])
 
-.run(function($window, $rootScope) {
+.run(['$window', '$rootScope', function($window, $rootScope) {
     // before leaving this page, signal all event listeners to save their data
     $window.onbeforeunload = function(event) {
         console.log("broadcasting save state event");
         $rootScope.$broadcast('SaveStateEvent');
     };
-})
+}])
 
 ;

@@ -12,6 +12,9 @@
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-ng-constant": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
     "lodash": "^4.1.0",
     "mongoose": "^4.3.6",
     "yargs": "^4.1.0"
