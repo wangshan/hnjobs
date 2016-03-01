@@ -255,11 +255,11 @@ app.controller('HnJobsController',
     ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService', 'dateMonthService',
     function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService, dateMonthService) {
 
-    var promises = [];
-
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) {
             $scope.dateLabels = response;
+
+            var promises = [];
 
             $scope.dateLabels.reverse().forEach(function(item) {
                 var monthStr = dateMonthService.getMonthYearText(item);
@@ -274,20 +274,21 @@ app.controller('HnJobsController',
                         .then(
                             function(response) {
                                 var num = response.length;
-                                chartService.numPosts.series[call.index].push(num);
+                                chartService.numPosts.series[call.index][$scope.dateLabels.indexOf(item)] = num;
                             },
                             function(response) {
-                                chartService.numPosts.series[call.index].push(0);
+                                chartService.numPosts.series[call.index][$scope.dateLabels.indexOf(item)] = 0;
                             })
                         );
                 });
             });
-            
+
             $q.all(promises).then(function() {
                 console.log("all promises ready");
                 console.log(chartService.numPosts.series);
                 $scope.charts = new Chartist.Bar('#chartNumPosts', chartService.numPosts);
             });
+            
         },
         function(response) {
             $scope.message = "Failed to get date labels\n"
