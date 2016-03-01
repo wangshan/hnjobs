@@ -59,7 +59,8 @@
                                     All</a>
                             </li>
                             <li class="pointer-on-tab"
-                                ng-repeat="dateLabel in dateLabels">
+                                ng-repeat="dateLabel in dateLabels"
+                                ng-class="{disabled: noDataForThisMonth($index)}">
                                 <a ng-click="selectMonth($index+1)"
                                     aria-controls="getMonthYearText(dateLabel)">
                                     {{ getMonthYearText(dateLabel) }}</a>

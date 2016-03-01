@@ -125,9 +125,6 @@ app.controller('HnJobsController',
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) { // the response is the actual data
             $scope.dateLabels = response;
-            $scope.dateLabels.forEach(function(dat) {
-                console.log("dateLabel=",dat);
-            })
         },
         function(response) { // but here is the response object
             $scope.message = "Failed to get date labels\n"
@@ -156,20 +153,20 @@ app.controller('HnJobsController',
         }
         );
 
-    /* TODO: make this a directive?
-    $(".dropdown-menu li a").click(function () {
-        var selText = $(this).text();
-        $(this)
-            .closest('div')
-            .find('button[data-toggle="dropdown"]')
-            .html(selText + ' <span class="caret"></span>');
-        $(this).closest('.dropdown').removeClass("open");
-        return false;
-    });
-    */
-
     $scope.filtMonth = cacheStateService.userData.filtMonth;
-    console.log("initially, filtMonth=", $scope.filtMonth);
+    //console.log("initially, filtMonth=", $scope.filtMonth);
+
+    $scope.filterByMonth2 = function(job) {
+        return this.monthStr === job.monthPosted;
+    };
+
+    $scope.noDataForThisMonth = function(monthIndex) {
+        var closure = {
+            monthStr: $scope.getMonthYearText($scope.dateLabels[monthIndex])
+        };
+        var filterThisMonth = $scope.filterByMonth2.bind(closure);
+        return $scope.jobs.findIndex(filterThisMonth) === -1;
+    };
 
     $scope.getFiltMonth = function() {
         if (angular.isUndefined(cacheStateService.userData.filtMonth)) {
@@ -179,11 +176,17 @@ app.controller('HnJobsController',
                     return $scope.dateLabels; },
                 function() {
                     cacheStateService.userData.filtMonth = $scope.dateLabels[0];
-                    console.log("watch", $scope.dateLabels[0]); }
-                    );
+                    // TODO: this is cheating, fix it properly
+                    // if the latest month hasn't been populated yet, forcus on
+                    // the month before
+                    if ($scope.noDataForThisMonth(0)) {
+                        cacheStateService.userData.filtMonth = $scope.dateLabels[1];
+                    }
+                }
+                );
         }
         $scope.filtMonth = cacheStateService.userData.filtMonth;
-        console.info("getFiltMonth", $scope.filtMonth);
+        //console.info("getFiltMonth", $scope.filtMonth);
 
         if ($scope.filtMonth === null) {
             return "All";
@@ -206,7 +209,7 @@ app.controller('HnJobsController',
     $scope.filterByMonth = function(job) {
         return $scope.filtMonth === null
             || $scope.getMonthYearText($scope.filtMonth) === job.monthPosted;
-    }
+    };
 
     $scope.selectSourceType = function(setTab) {
         cacheStateService.userData.tab = setTab;
