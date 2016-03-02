@@ -154,7 +154,7 @@ app.controller('HnJobsController',
         );
 
     $scope.filtMonth = cacheStateService.userData.filtMonth;
-    //console.log("initially, filtMonth=", $scope.filtMonth);
+    console.log("initially, filtMonth=", $scope.filtMonth);
 
     $scope.filterByMonth2 = function(job) {
         return this.monthStr === job.monthPosted;
@@ -255,6 +255,9 @@ app.controller('HnJobsController',
     ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService', 'dateMonthService',
     function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService, dateMonthService) {
 
+    $scope.showCharts = false;
+    $scope.message = "Loading ...";
+
     $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
         function(response) {
             $scope.dateLabels = response;
@@ -284,14 +287,15 @@ app.controller('HnJobsController',
             });
 
             $q.all(promises).then(function() {
+                $scope.showCharts = true;
                 console.log("all promises ready");
-                console.log(chartService.numPosts.series);
+                //console.log(chartService.numPosts.series);
                 $scope.charts = new Chartist.Bar('#chartNumPosts', chartService.numPosts);
             });
             
         },
         function(response) {
-            $scope.message = "Failed to get date labels\n"
+            $scope.message = "Failed to get charts\n"
                 + "Error: " + response.status + " " + response.statusText;
         }
     );

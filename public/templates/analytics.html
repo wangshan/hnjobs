@@ -8,14 +8,19 @@
                    <li class="active">Analytics</li>
                </ul>
             </div>
+            <div class="col-xs-12" ng-if="!showCharts">
+                <h3>{{message}}</h3>
+            </div>
+            <!--for some reason ng-if wont' work here-->
             <div class="col-xs-12">
+                <h3 ng-if="showCharts">Number Of Posts Over Month</h3>
                 <div class="ct-chart ct-perfect-fourth" id="chartNumPosts"></div>
             </div>
             <br>
             <div class="col-xs-12">
-               <h3>Analytics</h3>
-               <p>More to be added...</p>
-               <hr>
+                <hr>
+                <p>More to be added...</p>
+                <hr>
             </div>
         </div>
     </div>

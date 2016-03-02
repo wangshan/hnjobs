@@ -1,2 +1,2 @@
-worker: node app/hnjobs.js -f
+worker: node app/hnjobs.js
 web:    node app/server.js
