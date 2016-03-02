@@ -23,9 +23,15 @@ var argv = require('yargs')
     .argv;
  
 console.log("starting...");
+console.log("force:", argv.f);
 
-var saveNewDateLabel = function(dateLabels, newDate) {
+var saveNewDateLabel = function(dateLabels, newDate, step) {
     console.log("saveNewDateLabel, newDate=", newDate);
+    if (step === 0) {
+        return;
+    }
+    --step;
+
     var newDateLabel = new DateLabel({
         month: newDate,
     });
@@ -47,7 +53,7 @@ var saveNewDateLabel = function(dateLabels, newDate) {
                 if (dateLabels.length > 5) {
                     dateLabels.shift();
                 }
-                else if (dateLabels.length < 5 || argv.f ) {
+                if (step > 0) {
                     // FIXME: if there are >= 5 date labels, even the actual
                     // data is empty, we still only request the latest month,
                     // maybe I should try
@@ -56,7 +62,7 @@ var saveNewDateLabel = function(dateLabels, newDate) {
                     // 2) add a force flag and pass from command line, I think
                     // this is a better solution
                     var prevDate = MonthYear.getPrevMonthYear(newDateLabel.month);
-                    saveNewDateLabel(dateLabels, prevDate);
+                    saveNewDateLabel(dateLabels, prevDate, step);
                 }
             }
 
@@ -79,19 +85,19 @@ var retrieve = function() {
             }
             else {
                 var latestIndex = _.findIndex(dateLabels, function(o) {
-                    return o.month === newDate;
+                    return o.month.getTime() === newDate.getTime();
                 });
 
-                if (latestIndex === -1) {
-                    console.log("lastestIndex===-1, new date appeared");
-                    saveNewDateLabel(dateLabels, newDate);
+                if (argv.f) {
+                    saveNewDateLabel(dateLabels, newDate, 5);
                 }
-                else if (latestIndex === 0) {
-                    console.log("lastestIndex===0, current date is the latest");
+                else if (latestIndex === -1 || latestIndex === 0) {
+                    saveNewDateLabel(dateLabels, newDate, 1);
+
                     // should only happen during developing
-                    if (dateLabels.length < 4) {
+                    if (dateLabels.length < 5) {
                         var prevDate = MonthYear.getPrevMonthYear(newDate);
-                        saveNewDateLabel(dateLabels, prevDate);
+                        saveNewDateLabel(dateLabels, prevDate, 4);
                     }
                 }
                 else {
