@@ -105,23 +105,34 @@
                             </div>
                         </li>
                         <li class="media"
-                            ng-show="!showJob"
-                            ng-repeat="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
-                            <div class="media-body">
-                                <h3 class="media-heading">{{candidate.name}}
+                            ng-show="!showJob">
+                            <div ng-repeat-start="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
+                            </div>
+                            <div ng-init="toggle.expanded=true" class="panel panel-default" ng-repeat-end>
+                                <div class="panel-heading">
+                                    <span ng-init="toggle.expanded=true" class="btn-group" role="group" aria-label="...">
+                                        <a type="button"
+                                            class="glyphicon glyphicon-triangle-bottom"
+                                            ng-if="toggle.expanded"
+                                            ng-click="toggle.expanded=false"></a>
+                                        <a type="button"
+                                            class="glyphicon glyphicon-triangle-right"
+                                            ng-if="!toggle.expanded"
+                                            ng-click="toggle.expanded=true"></a>
+                                    </span>
+                                    <span class="badge">{{candidate.name}}</span>
                                     <span class="badge">{{candidate.monthPosted}}</span>
                                     <span class="badge">{{candidate.source}}</span>
-                                    <h4>
-                                    <span class="pull-left">
+                                    <span class="pull-right">
                                         <a type="button" class="label label-info"
                                             ui-sref="app.jobdetails({id: candidate.id})"
                                             ng-click="sharePost(candidate)">Share
                                         </a>
                                     </span>
-                                    <br>
-                                    </h4>
-                                </h3>
-                                <p ng-bind-html="candidate.description | asHtml"></p>
+                                </div>
+                                <div class="panel-body" ng-if="toggle.expanded">
+                                    <p ng-bind-html="candidate.description | asHtml"></p>
+                                </div>
                             </div>
                         </li>
                     </ul>
