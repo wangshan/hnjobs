@@ -71,27 +71,37 @@
                 <div class="tab-content" scroller>
                     <ul class="media-list tab-pane fade in active">
                         <li class="media"
-                            ng-show="showJob"
-                            ng-repeat="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
-                            <div class="media-body">
-                                <h3 class="media-heading">{{job.company}}
+                            ng-show="showJob">
+                            <div ng-repeat-start="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
+                            </div>
+                            <div ng-init="toggle.expanded=true" class="panel panel-default" ng-repeat-end>
+                                <div class="panel-heading">
+                                    <span ng-init="toggle.expanded=true" class="btn-group" role="group" aria-label="...">
+                                        <a type="button"
+                                            class="glyphicon glyphicon-triangle-bottom"
+                                            ng-if="toggle.expanded"
+                                            ng-click="toggle.expanded=false"></a>
+                                        <a type="button"
+                                            class="glyphicon glyphicon-triangle-right"
+                                            ng-if="!toggle.expanded"
+                                            ng-click="toggle.expanded=true"></a>
+                                    </span>
                                     <span class="badge">{{job.monthPosted}}</span>
                                     <span class="badge">{{job.source}}</span>
                                     <span class="badge">{{job.type | printArray: '/'}}</span>
                                     <span class="badge">{{job.time | date}}</span>
                                     <span class="badge">{{job.remote | printBool: 'remote'}}</span>
                                     <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
-                                    <h4>
-                                    <span class="pull-left">
+                                    <span class="pull-right">
                                         <a type="button" class="label label-info"
                                             ui-sref="app.jobdetails({id: job.id})"
                                             ng-click="sharePost(job)">Share
                                         </a>
                                     </span>
-                                    <br>
-                                    </h4>
-                                </h3>
-                                <p ng-bind-html="job.description | asHtml"></p>
+                                </div>
+                                <div class="panel-body" ng-if="toggle.expanded">
+                                    <p ng-bind-html="job.description | asHtml"></p>
+                                </div>
                             </div>
                         </li>
                         <li class="media"
