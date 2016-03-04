@@ -29,6 +29,13 @@ gulp.task('build', ['config'], function() {
     return stream;
 });
 
+gulp.task('build_debug', ['config'], function() {
+    var stream = gulp.src(['public/js/config.js', 'public/js/*.js'])
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest('public/dist'));
+    return stream;
+});
+
 gulp.task('watch:build', ['build'], function() {
     gulp.watch('public/js/*.js', ['build']);
     gulp.watch('gulpfile.js', ['build']);

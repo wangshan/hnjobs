@@ -7,7 +7,10 @@ router.use('/bower_components', express.static(__dirname + '/../../bower_compone
 
 router.get('/', function(req, res) {
     // sendFile doesn't like .. in the path, so have to resolve it
-    var resolvedFile = path.resolve('public/layouts/index.html');
+    var resolvedFile = (process.env.NODE_ENV == "Production")
+                       ? path.resolve('public/layouts/index.html') 
+                       : path.resolve('public/layouts/index_dev.html');
+
     console.log(resolvedFile);
     res.sendFile(resolvedFile);
 });
