@@ -82,8 +82,8 @@ app.directive('back', ['$window', function($window) {
 }]);
 
 app.controller('HnJobsController',
-    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService',
-    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService) {
+    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService', 'persistStateService',
+    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService, persistStateService) {
     
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
@@ -109,12 +109,14 @@ app.controller('HnJobsController',
 
     // true shows job post, otherwise show candidate post
     $scope.showJob = cacheStateService.userData.showJob;
+    // TODO: totalDisplayed need to be an array, one per sourceTypes
     $scope.totalDisplayed = cacheStateService.userData.totalDisplayed;
 
     $scope.loadMore = function() {
         $scope.totalDisplayed += 20;
         cacheStateService.userData.totalDisplayed = $scope.totalDisplayed;
     }
+
 
     if (angular.isUndefined(cacheStateService.userData.filtType)) {
         cacheStateService.userData.filtType = $scope.sourceTypes[0];
@@ -176,17 +178,21 @@ app.controller('HnJobsController',
                     return $scope.dateLabels; },
                 function() {
                     cacheStateService.userData.filtMonth = $scope.dateLabels[0];
+                    console.log("cached filtMonth:", cacheStateService.userData.filtMonth);
                     // TODO: this is cheating, fix it properly
                     // if the latest month hasn't been populated yet, forcus on
                     // the month before
                     if ($scope.noDataForThisMonth(0)) {
+                        console.log("no data for latest month");
                         cacheStateService.userData.filtMonth = $scope.dateLabels[1];
                     }
                 }
                 );
         }
+
+        // TODO: move these to watch? must make sure it works after the first load
         $scope.filtMonth = cacheStateService.userData.filtMonth;
-        //console.info("getFiltMonth", $scope.filtMonth);
+        console.info("getFiltMonth", $scope.filtMonth);
 
         if ($scope.filtMonth === null) {
             return "All";
@@ -194,7 +200,7 @@ app.controller('HnJobsController',
         else {
             return $scope.getMonthYearText($scope.filtMonth);
         }
-    }
+    };
 
     $scope.selectMonth = function(setMonth) {
         if (setMonth === 0) {
@@ -249,6 +255,14 @@ app.controller('HnJobsController',
         console.info("to share: ", post.id);
     };
 
+    $scope.setToggleExpand = function(id, expand) {
+        persistStateService.toggle[id] = expand;
+    };
+
+    $scope.getToggleExpand = function(id) {
+        return angular.isUndefined(persistStateService.toggle[id])
+            || persistStateService.toggle[id];
+    };
 }])
 
 .controller('AnalyticsController',

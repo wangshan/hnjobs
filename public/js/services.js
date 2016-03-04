@@ -119,6 +119,34 @@ angular.module('hnJobsApp')
         };
     })
 
+    .service('persistStateService', ['$window', '$rootScope',
+        function($window, $rootScope) {
+
+        var model = {
+            toggle: {}
+        };
+
+        // TODO: change to localStorage?
+        var saveData = function() {
+            $window.sessionStorage.toggle = angular.toJson(model.toggle);
+            console.log("persistStateService, to save data");
+        }
+
+        var restoreData = function() {
+            var toggle = angular.fromJson($window.sessionStorage.toggle);
+            model.toggle = toggle;
+            console.log("persistStateService, to restore data");
+        }
+
+        // restore data on initialization
+        if ($window.sessionStorage.toggle) {
+            restoreData();
+        }
+
+        $rootScope.$on('SaveStateEvent', saveData);
+        return model; 
+    }])
+
     .service('cacheStateService', ['$window', '$rootScope',
         function($window, $rootScope) {
 
@@ -138,15 +166,15 @@ angular.module('hnJobsApp')
 
         var saveData = function() {
             $window.sessionStorage.userData = angular.toJson(model.userData);
-            console.log("to save data");
+            console.log("cacheStateService, to save data");
         }
 
         var restoreData = function() {
             var data = angular.fromJson($window.sessionStorage.userData);
-            // convert from string
+            // convert from string, because there's no date type in JSON
             data.filtMonth = new Date(data.filtMonth);
             model.userData = data;
-            console.log("to restore data");
+            console.log("cacheStateService, to restore data");
         }
 
         // restore data on initialization

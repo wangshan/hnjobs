@@ -72,19 +72,19 @@
                     <ul class="media-list tab-pane fade in active">
                         <li class="media"
                             ng-show="showJob">
-                            <div ng-repeat-start="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
+                            <div ng-repeat-start="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed as filteredJobs">
                             </div>
-                            <div ng-init="toggle.expanded=true" class="panel panel-default" ng-repeat-end>
+                            <div class="panel panel-default" ng-repeat-end>
                                 <div class="panel-heading">
-                                    <span ng-init="toggle.expanded=true" class="btn-group" role="group" aria-label="...">
+                                    <span class="btn-group" role="group" aria-label="...">
                                         <a type="button"
                                             class="glyphicon glyphicon-triangle-bottom"
-                                            ng-if="toggle.expanded"
-                                            ng-click="toggle.expanded=false"></a>
+                                            ng-if="getToggleExpand(job.id)"
+                                            ng-click="setToggleExpand(job.id, false)"></a>
                                         <a type="button"
                                             class="glyphicon glyphicon-triangle-right"
-                                            ng-if="!toggle.expanded"
-                                            ng-click="toggle.expanded=true"></a>
+                                            ng-if="!getToggleExpand(job.id)"
+                                            ng-click="setToggleExpand(job.id, true)"></a>
                                     </span>
                                     <span class="badge">{{job.monthPosted}}</span>
                                     <span class="badge">{{job.source}}</span>
@@ -99,26 +99,26 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div class="panel-body" ng-if="toggle.expanded">
+                                <div class="panel-body" ng-if="getToggleExpand(job.id)">
                                     <p ng-bind-html="job.description | asHtml"></p>
                                 </div>
                             </div>
                         </li>
                         <li class="media"
                             ng-show="!showJob">
-                            <div ng-repeat-start="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed">
+                            <div ng-repeat-start="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed as filteredCandidates">
                             </div>
-                            <div ng-init="toggle.expanded=true" class="panel panel-default" ng-repeat-end>
+                            <div class="panel panel-default" ng-repeat-end>
                                 <div class="panel-heading">
-                                    <span ng-init="toggle.expanded=true" class="btn-group" role="group" aria-label="...">
+                                    <span class="btn-group" role="group" aria-label="...">
                                         <a type="button"
                                             class="glyphicon glyphicon-triangle-bottom"
-                                            ng-if="toggle.expanded"
-                                            ng-click="toggle.expanded=false"></a>
+                                            ng-if="getToggleExpand(candidate.id)"
+                                            ng-click="setToggleExpand(candidate.id, false)"></a>
                                         <a type="button"
                                             class="glyphicon glyphicon-triangle-right"
-                                            ng-if="!toggle.expanded"
-                                            ng-click="toggle.expanded=true"></a>
+                                            ng-if="!getToggleExpand(candidate.id)"
+                                            ng-click="setToggleExpand(candidate.id, true)"></a>
                                     </span>
                                     <span class="badge">{{candidate.name}}</span>
                                     <span class="badge">{{candidate.monthPosted}}</span>
@@ -130,7 +130,7 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div class="panel-body" ng-if="toggle.expanded">
+                                <div class="panel-body" ng-if="getToggleExpand(candidate.id)">
                                     <p ng-bind-html="candidate.description | asHtml"></p>
                                 </div>
                             </div>
@@ -138,7 +138,11 @@
                     </ul>
                 </div>
                 <br>
-                <button class="btn btn-warning btn-block" role="button" ng-click="loadMore()">Load More</button>
+                <button class="btn btn-warning btn-block"
+                    role="button"
+                    ng-show="(showJob && filteredJobs.length >= totalDisplayed) || (!showJob && filteredCandidates.length >= totalDisplayed)"
+                    ng-click="loadMore()">Load More
+                </button>
             </div>
 
         </div>
