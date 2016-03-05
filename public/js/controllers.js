@@ -82,8 +82,8 @@ app.directive('back', ['$window', function($window) {
 }]);
 
 app.controller('HnJobsController',
-    ['$scope', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService', 'persistStateService',
-    function($scope, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService, persistStateService) {
+    ['$scope', '$timeout', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService', 'persistStateService',
+    function($scope, $timeout, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService, persistStateService) {
     
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
@@ -159,6 +159,7 @@ app.controller('HnJobsController',
         return this.monthStr === job.monthPosted;
     };
 
+    // FIXME: this depends on both dateLabels and jobs
     $scope.noDataForThisMonth = function(monthIndex) {
         var closure = {
             monthStr: $scope.getMonthYearText($scope.dateLabels[monthIndex])
@@ -187,10 +188,12 @@ app.controller('HnJobsController',
                 // TODO: this is cheating, fix it properly
                 // if the latest month hasn't been populated yet, forcus on
                 // the month before
-                if ($scope.noDataForThisMonth(0) && $scope.dateLabels.length > 1) {
-                    console.log("no data for latest month");
-                    cacheStateService.userData.filtMonth = $scope.dateLabels[1];
-                }
+                $timeout(function() {
+                    if ($scope.noDataForThisMonth(0) && $scope.dateLabels.length > 1) {
+                        console.log("no data for latest month");
+                        cacheStateService.userData.filtMonth = $scope.dateLabels[1];
+                    }
+                }, 1000);
                 $scope.filtMonth = cacheStateService.userData.filtMonth;
                 $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
 
