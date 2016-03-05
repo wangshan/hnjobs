@@ -22,6 +22,7 @@
                                     class="form-control search-query"
                                     placeholder="word or regex..."
                                     ng-model="search.searchPattern"
+                                    ng-model-options="{debounce: 400}"
                                     ng-change="updateSearchPattern()"/>
                                 <span class="input-group-btn">
                                     <button type="submit"

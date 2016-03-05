@@ -2,8 +2,17 @@ var path = require('path');
 var express = require('express');
 var router = express.Router();
 
-router.use('/static', express.static(__dirname + '/../../public'));
-router.use('/bower_components', express.static(__dirname + '/../../bower_components'));
+var cacheTime = 86400 * 1000;
+var cacheTimeFor3rdParty = 86400 * 1000 * 7;
+
+router.use('/static', express.static(
+            __dirname + '/../../public',
+            { maxAge: cacheTime })
+        );
+router.use('/bower_components', express.static(
+            __dirname + '/../../bower_components',
+            { maxAge: cacheTimeFor3rdParty })
+        );
 
 router.get('/', function(req, res) {
     // sendFile doesn't like .. in the path, so have to resolve it

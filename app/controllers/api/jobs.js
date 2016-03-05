@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
             console.log("Can't find any jobs");
             return next(err);
         }
+        res.setHeader('Cache-Control', 'public, max-age=86400');
         res.json(jobs);
     });
 });
@@ -19,6 +20,7 @@ router.get('/:id', function(req, res, next) {
             console.log("Can't find any job with id " + req.params.id);
             return next(err);
         }
+        res.setHeader('Cache-Control', 'public, max-age=86400');
         res.json(job);
     });
 });
@@ -30,6 +32,7 @@ router.get('/months/:month', function(req, res, next) {
             console.log("Can't find any jobs in month " + req.params.monthPosted);
             return next(err);
         }
+        res.setHeader('Cache-Control', 'public, max-age=86400');
         res.json(jobs);
     });
 });
