@@ -21,6 +21,7 @@ router.get('/', function(req, res) {
                        : path.resolve('public/layouts/index_dev.html');
 
     console.log(resolvedFile);
+    res.set({'Cache-Control': 'public, max-age=86400'});
     res.sendFile(resolvedFile);
 });
 

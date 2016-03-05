@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
             console.log("Can't find any date labels");
             return next(err);
         }
-        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.set({'Cache-Control': 'public, max-age=86400'});
         res.json(dates);
     });
 });
