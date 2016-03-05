@@ -50,7 +50,7 @@
                             data-toggle="dropdown"
                             aria-haspopup="true"
                             aria-expanded="false">
-                            {{ getFiltMonth() }}
+                            {{ filtMonthLabel }}
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="month">
@@ -61,10 +61,10 @@
                             </li>
                             <li class="pointer-on-tab"
                                 ng-repeat="dateLabel in dateLabels"
-                                ng-class="{disabled: noDataForThisMonth($index)}">
+                                ng-class="{disabled: disableMonth[$index]}">
                                 <a ng-click="selectMonth($index+1)"
-                                    aria-controls="getMonthYearText(dateLabel)">
-                                    {{ getMonthYearText(dateLabel) }}</a>
+                                    aria-controls="getFiltMonthLabel(dateLabel)">
+                                    {{ getFiltMonthLabel(dateLabel) }}</a>
                             </li>
                         </ul>
                     </li>

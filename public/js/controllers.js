@@ -155,9 +155,6 @@ app.controller('HnJobsController',
         }
         );
 
-    $scope.filtMonth = cacheStateService.userData.filtMonth;
-    console.log("initially, filtMonth=", $scope.filtMonth);
-
     $scope.filterByMonth2 = function(job) {
         return this.monthStr === job.monthPosted;
     };
@@ -170,37 +167,46 @@ app.controller('HnJobsController',
         return $scope.jobs.findIndex(filterThisMonth) === -1;
     };
 
-    $scope.getFiltMonth = function() {
-        if (angular.isUndefined(cacheStateService.userData.filtMonth)) {
-            // wait for dateLabels to be populated
-            $scope.$watch(
-                function() {
-                    return $scope.dateLabels; },
-                function() {
-                    cacheStateService.userData.filtMonth = $scope.dateLabels[0];
-                    console.log("cached filtMonth:", cacheStateService.userData.filtMonth);
-                    // TODO: this is cheating, fix it properly
-                    // if the latest month hasn't been populated yet, forcus on
-                    // the month before
-                    if ($scope.noDataForThisMonth(0)) {
-                        console.log("no data for latest month");
-                        cacheStateService.userData.filtMonth = $scope.dateLabels[1];
-                    }
-                }
-                );
-        }
-
-        // TODO: move these to watch? must make sure it works after the first load
-        $scope.filtMonth = cacheStateService.userData.filtMonth;
-        console.info("getFiltMonth", $scope.filtMonth);
-
-        if ($scope.filtMonth === null) {
+    $scope.getFiltMonthLabel = function(date) {
+        if (date === null) {
             return "All";
         }
         else {
-            return $scope.getMonthYearText($scope.filtMonth);
+            return $scope.getMonthYearText(date);
         }
-    };
+    }
+
+    if (angular.isUndefined(cacheStateService.userData.filtMonth)) {
+        // wait for dateLabels to be populated
+        $scope.$watch(
+            function() {
+                return $scope.dateLabels; },
+            function() {
+                cacheStateService.userData.filtMonth = $scope.dateLabels[0];
+                console.log("cached filtMonth:", cacheStateService.userData.filtMonth);
+                // TODO: this is cheating, fix it properly
+                // if the latest month hasn't been populated yet, forcus on
+                // the month before
+                if ($scope.noDataForThisMonth(0) && $scope.dateLabels.length > 1) {
+                    console.log("no data for latest month");
+                    cacheStateService.userData.filtMonth = $scope.dateLabels[1];
+                }
+                $scope.filtMonth = cacheStateService.userData.filtMonth;
+                $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
+
+                // optimization, call noDataForThisMonth in controller to prevent it from
+                // being called many times in the digest cycle
+                for (var i = 0; i < $scope.dateLabels.length; ++i) {
+                    $scope.disableMonth[i] = $scope.noDataForThisMonth(i);
+                }
+            }
+            );
+    }
+    else {
+        $scope.filtMonth = cacheStateService.userData.filtMonth;
+        $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
+        console.log("initially, filtMonth=", $scope.filtMonth);
+    }
 
     $scope.selectMonth = function(setMonth) {
         if (setMonth === 0) {
@@ -210,6 +216,7 @@ app.controller('HnJobsController',
             cacheStateService.userData.filtMonth = $scope.dateLabels[setMonth-1];
         }
         $scope.filtMonth = cacheStateService.userData.filtMonth;
+        $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
     };
 
     $scope.filterByMonth = function(job) {
