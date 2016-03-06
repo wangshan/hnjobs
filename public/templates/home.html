@@ -73,7 +73,11 @@
                     <ul class="media-list tab-pane fade in active">
                         <li class="media"
                             ng-if="showJob">
-                            <div ng-repeat-start="job in jobs | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed as filteredJobs">
+                            <div ng-repeat-start="job in jobs
+                                | filter: filterByMonth
+                                | filter: filterBySource
+                                | regex: 'description': search.searchPattern
+                                | limitTo: totalDisplayed as filteredJobs">
                             </div>
                             <div class="panel panel-default" ng-repeat-end>
                                 <div class="panel-heading">
@@ -107,7 +111,11 @@
                         </li>
                         <li class="media"
                             ng-if="!showJob">
-                            <div ng-repeat-start="candidate in candidates | filter: filterByMonth | filter: filterBySource | regex: 'description': search.searchPattern | limitTo: totalDisplayed as filteredCandidates">
+                            <div ng-repeat-start="candidate in candidates
+                                | filter: filterByMonth
+                                | filter: filterBySource
+                                | regex: 'description': search.searchPattern
+                                | limitTo: totalDisplayed as filteredCandidates">
                             </div>
                             <div class="panel panel-default" ng-repeat-end>
                                 <div class="panel-heading">
@@ -141,9 +149,12 @@
                 <br>
                 <button class="btn btn-warning btn-block"
                     role="button"
-                    ng-show="(showJob && filteredJobs.length >= totalDisplayed) || (!showJob && filteredCandidates.length >= totalDisplayed)"
                     ng-click="loadMore()">Load More
                 </button>
+                <!--
+                    ng-show="(showJob && filteredJobs.length >= totalDisplayed)
+                          || (!showJob && filteredCandidates.length >= totalDisplayed)"
+                          -->
             </div>
 
         </div>
