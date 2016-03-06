@@ -290,7 +290,9 @@ app.controller('HnJobsController',
 
             $scope.dateLabels.reverse().forEach(function(item) {
                 var monthStr = dateMonthService.getMonthYearText(item);
-                chartService.numPosts.labels.push(monthStr);
+                if (chartService.numPosts.labels.indexOf(monthStr) == -1) {
+                    chartService.numPosts.labels.push(monthStr);
+                }
 
                 [{ api: hnJobsFactory.getHnJobsByMonth, index: 0 },
                  { api: hnJobsFactory.getHnCandidatesByMonth, index: 1 }
