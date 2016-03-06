@@ -137,20 +137,19 @@ angular.module('hnJobsApp')
             toggle: {}
         };
 
-        // TODO: change to localStorage?
         var saveData = function() {
-            $window.sessionStorage.toggle = angular.toJson(model.toggle);
+            $window.localStorage.toggle = angular.toJson(model.toggle);
             console.log("persistStateService, to save data");
         }
 
         var restoreData = function() {
-            var toggle = angular.fromJson($window.sessionStorage.toggle);
+            var toggle = angular.fromJson($window.localStorage.toggle);
             model.toggle = toggle;
             console.log("persistStateService, to restore data");
         }
 
         // restore data on initialization
-        if ($window.sessionStorage.toggle) {
+        if ($window.localStorage.toggle) {
             restoreData();
         }
 
@@ -170,9 +169,14 @@ angular.module('hnJobsApp')
             totalDisplayed: 20,
         }
 
+        var setPattern = function(newPattern) {
+            model.userData.searchPattern = newPattern;
+            console.log("searchPattern updated:", newPattern);
+        }
+
         var model = {
             userData: initialUserData,
-            setData: setData,
+            setPattern: setPattern,
         };
 
         var saveData = function() {
@@ -191,11 +195,6 @@ angular.module('hnJobsApp')
         // restore data on initialization
         if ($window.sessionStorage.userData) {
             restoreData();
-        }
-
-        var setData = function(newPattern) {
-            model.userData.searchPattern = newPattern;
-            console.log("searchPattern updated:", newPattern);
         }
 
         $rootScope.$on('SaveStateEvent', saveData);

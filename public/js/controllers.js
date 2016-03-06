@@ -31,7 +31,7 @@ app.controller('HnJobsController',
     }
 
     $scope.updateSearchPattern = function() {
-        cacheStateService.setData($scope.search.searchPattern);
+        cacheStateService.setPattern($scope.search.searchPattern);
     }
 
     // must match source field in the models
