@@ -3,8 +3,22 @@
 var app = angular.module('hnJobsApp');
 
 app.controller('HnJobsController',
-    ['$scope', '$timeout', 'hnJobsFactory', 'dateLabelsFactory', 'cacheStateService', 'dateMonthService', 'persistStateService',
-    function($scope, $timeout, hnJobsFactory, dateLabelsFactory, cacheStateService, dateMonthService, persistStateService) {
+    ['$scope',
+    '$timeout',
+    'hnJobsFactory',
+    'dateLabelsFactory',
+    'cacheStateService',
+    'dateMonthService',
+    'persistStateService',
+    'sharePostService',
+    function($scope,
+        $timeout,
+        hnJobsFactory,
+        dateLabelsFactory,
+        cacheStateService,
+        dateMonthService,
+        persistStateService,
+        sharePostService) {
     
     $scope.showHnJobs = false;
     $scope.message = "Loading ...";
@@ -56,21 +70,21 @@ app.controller('HnJobsController',
         );
 
     $scope.jobs = hnJobsFactory.getHnJobs().query(
-        function(response) { // the response is the actual data
+        function(response) {
             $scope.jobs = response;
             $scope.showHnJobs = true;
         },
-        function(response) { // but here is the response object, why?
+        function(response) {
             $scope.message = "Failed to get jobs\n"
                 + "Error: " + response.status + " " + response.statusText;
         }
         );
 
     $scope.candidates = hnJobsFactory.getHnCandidates().query(
-        function(response) { // the response is the actual data
+        function(response) {
             $scope.candidates = response;
         },
-        function(response) { // but here is the response object, why?
+        function(response) {
             $scope.message = "Failed to get candidates\n"
                 + "Error: " + response.status + " " + response.statusText;
         }
@@ -171,18 +185,9 @@ app.controller('HnJobsController',
             || $scope.filtType === job.source;
     }
 
-    // TODO: save this in a service so the controller don't have to query the 
-    // api again
-    $scope.share = {
-        postId: "",
-        content: "",
-        email: "",
-        subject: "",
-    };
-
     $scope.sharePost = function(post) {
-        $scope.share.postId = post.id;
-        $scope.share.content = post.description;
+        sharePostService.postId = post.id;
+        sharePostService.content = post.description;
         console.info("to share: ", post.id);
     };
 
@@ -197,8 +202,18 @@ app.controller('HnJobsController',
 }])
 
 .controller('AnalyticsController',
-    ['$scope', '$q', 'dateLabelsFactory', 'hnJobsFactory', 'chartService', 'dateMonthService',
-    function($scope, $q, dateLabelsFactory, hnJobsFactory, chartService, dateMonthService) {
+    ['$scope',
+    '$q',
+    'dateLabelsFactory',
+    'hnJobsFactory',
+    'chartService',
+    'dateMonthService',
+    function($scope,
+        $q,
+        dateLabelsFactory,
+        hnJobsFactory,
+        chartService,
+        dateMonthService) {
 
     $scope.showCharts = false;
     $scope.message = "Loading ...";
@@ -250,15 +265,20 @@ app.controller('HnJobsController',
 }])
 
 .controller('JobDetailsController',
-    ['$scope', '$stateParams', '$location', 'hnJobsFactory', 'cacheStateService',
-    function($scope, $stateParams, $location, hnJobsFactory, cacheStateService) {
+    ['$scope',
+    '$stateParams',
+    '$location',
+    'hnJobsFactory',
+    'cacheStateService',
+    'sharePostService',
+    function($scope,
+        $stateParams,
+        $location,
+        hnJobsFactory,
+        cacheStateService,
+        sharePostService) {
 
-    $scope.share = {
-        postId: "",
-        email: "",
-        content: "",
-        subject: "",
-    };
+    $scope.share = sharePostService;
 
     $scope.isJob = cacheStateService.userData.showJob;
     var futurePost = $scope.isJob
@@ -268,21 +288,22 @@ app.controller('HnJobsController',
     console.log("$scope.isJob=", $scope.isJob);
 
     futurePost.$promise.then(
-        function(response) { // the response is the actual data
-            $scope.share.content = response.description;
+        function(response) {
+            sharePostService.content = response.description;
         },
-        function(response) { // but here is the response object, why?
+        function(response) {
             $scope.message = "Failed to get jobs\n"
                 + "Error: " + response.status + " " + response.statusText;
         }
     );
 
     $scope.sendEmail = function() {
-        var link = "mailto:"+ $scope.share.email
-             + "?subject= " + escape($scope.share.subject)
+        var link = "mailto:"+ sharePostService.email
+             + "?subject= " + escape(sharePostService.subject)
              + "&body=" + encodeURIComponent($location.absUrl());
              // NOTE: can't send html in mailto body, so this won't work!
-             //+ "&body=" + encodeURIComponent($filter('asHtml')($scope.share.content));
+             //+ "&body=" + encodeURIComponent(
+             //$filter('asHtml')(sharePostService.content));
 
         window.location.href = link;
     };

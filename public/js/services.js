@@ -90,6 +90,17 @@ angular.module('hnJobsApp')
         };
     }])
 
+    .service('sharePostService', function() {
+        var model = {
+            postId: "",
+            email: "",
+            content: "xx",
+            subject: "",
+        };
+
+        return model;
+    })
+
     .service('dateMonthService', function() {
         this.getMonthYearText = function(date) {
             var getMonthName = function(date) {
