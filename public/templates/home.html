@@ -8,12 +8,10 @@
     </a>
     <div class="container">
         <div class="row row-content">
-            <!-- only show this div is !showHnJobs is true, otherwise remove this
-            element from the DOM -->
-            <div class="col-xs-12" ng-if="!showHnJobs">
+            <div class="col-xs-12" ng-if="!showPosts">
                 <h3>{{message}}</h3>
             </div>
-            <div class="col-xs-12" ng-if="showHnJobs">
+            <div class="col-xs-12" ng-if="showPosts">
                 <div class="form-horizontal col-xs-12">
                     <div class="form-group">
                         <form class="form-search">
@@ -73,8 +71,7 @@
                     <ul class="media-list tab-pane fade in active"
                         ng-if="showJob">
                         <li class="media">
-                            <div ng-repeat-start="job in jobs
-                                | filter: filterByMonth
+                            <div ng-repeat-start="job in jobs[filtMonthLabel]
                                 | filter: filterBySource
                                 | regex: 'description': search.searchPattern
                                 | limitTo: totalDisplayed as filteredJobs">
@@ -118,8 +115,7 @@
                     <ul class="media-list tab-pane fade in active"
                         ng-if="!showJob">
                         <li class="media">
-                            <div ng-repeat-start="candidate in candidates
-                                | filter: filterByMonth
+                            <div ng-repeat-start="candidate in candidates[filtMonthLabel]
                                 | filter: filterBySource
                                 | regex: 'description': search.searchPattern
                                 | limitTo: totalDisplayed as filteredCandidates">

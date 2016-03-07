@@ -66,7 +66,9 @@ angular.module('hnJobsApp')
             var value;
             for (key in data) {
                 if (!data.hasOwnProperty(key) && // don't parse prototype or non-string props
-                    toString.call(data[key]) !== '[object String]') continue;
+                    toString.call(data[key]) !== '[object String]') {
+                    continue;
+                }
                 value = Date.parse(data[key].month); // try to parse to date
                 if (value !== NaN) {
                     dates.push(new Date(value));
@@ -186,8 +188,11 @@ angular.module('hnJobsApp')
 
         var restoreData = function() {
             var data = angular.fromJson($window.sessionStorage.userData);
-            // convert from string, because there's no date type in JSON
-            data.filtMonth = new Date(data.filtMonth);
+            console.log('data.filtMonth', data.filtMonth);
+            if (data.filtMonth != null) {
+                // convert from string, because there's no date type in JSON
+                data.filtMonth = new Date(data.filtMonth);
+            }
             model.userData = data;
             console.log("cacheStateService, to restore data");
         }

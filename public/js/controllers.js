@@ -4,7 +4,7 @@ var app = angular.module('hnJobsApp');
 
 app.controller('HnJobsController',
     ['$scope',
-    '$timeout',
+    '$q',
     'hnJobsFactory',
     'dateLabelsFactory',
     'cacheStateService',
@@ -12,7 +12,7 @@ app.controller('HnJobsController',
     'persistStateService',
     'sharePostService',
     function($scope,
-        $timeout,
+        $q,
         hnJobsFactory,
         dateLabelsFactory,
         cacheStateService,
@@ -20,87 +20,27 @@ app.controller('HnJobsController',
         persistStateService,
         sharePostService) {
     
-    $scope.showHnJobs = false;
-    $scope.message = "Loading ...";
-    $scope.search = {};
-    $scope.getMonthYearText = dateMonthService.getMonthYearText;
-
-    if (!angular.isUndefined(cacheStateService.userData.searchPattern)) {
-        $scope.search.searchPattern = cacheStateService.userData.searchPattern;
-        console.log("restore searchPattern, ", $scope.search.searchPattern);
-    }
-
-    $scope.updateSearchPattern = function() {
-        cacheStateService.setPattern($scope.search.searchPattern);
-    }
-
-    // must match source field in the models
-    $scope.sourceTypes = [
-        "Who Is Hiring",
-        "Seeking Freelancer",
-        "Who Wants To Be Hired",
-        "Seeking Freelance Work",
-        ];
-
-    // true shows job post, otherwise show candidate post
-    $scope.showJob = cacheStateService.userData.showJob;
-    // TODO: totalDisplayed need to be an array, one per sourceTypes
-    $scope.totalDisplayed = cacheStateService.userData.totalDisplayed;
-
-    $scope.loadMore = function() {
-        $scope.totalDisplayed += 20;
-        cacheStateService.userData.totalDisplayed = $scope.totalDisplayed;
-    }
-
-
-    if (angular.isUndefined(cacheStateService.userData.filtType)) {
-        cacheStateService.userData.filtType = $scope.sourceTypes[0];
-    }
-    $scope.filtType = cacheStateService.userData.filtType;
-    console.log("initially, filtType=", $scope.filtType);
-
-    $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
-        function(response) { // the response is the actual data
-            $scope.dateLabels = response;
-        },
-        function(response) { // but here is the response object
-            $scope.message = "Failed to get date labels\n"
-                + "Error: " + response.status + " " + response.statusText;
-        }
-        );
-
-    $scope.jobs = hnJobsFactory.getHnJobs().query(
-        function(response) {
-            $scope.jobs = response;
-            $scope.showHnJobs = true;
-        },
-        function(response) {
-            $scope.message = "Failed to get jobs\n"
-                + "Error: " + response.status + " " + response.statusText;
-        }
-        );
-
-    $scope.candidates = hnJobsFactory.getHnCandidates().query(
-        function(response) {
-            $scope.candidates = response;
-        },
-        function(response) {
-            $scope.message = "Failed to get candidates\n"
-                + "Error: " + response.status + " " + response.statusText;
-        }
-        );
-
-    $scope.filterByMonth2 = function(job) {
-        return this.monthStr === job.monthPosted;
+    $scope.setFiltMonth = function() {
+        $scope.filtMonth = cacheStateService.userData.filtMonth;
+        $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
     };
 
-    // FIXME: this depends on both dateLabels and jobs
+    $scope.selectMonth = function(setMonth) {
+        if (setMonth === 0) {
+            cacheStateService.userData.filtMonth = null;
+        }
+        else {
+            cacheStateService.userData.filtMonth = $scope.dateLabels[setMonth-1];
+        }
+        $scope.setFiltMonth();
+        $scope.getAllJobs();
+    };
+
+    // NOTE: this depends on both dateLabels and jobs
     $scope.noDataForThisMonth = function(monthIndex) {
-        var closure = {
-            monthStr: $scope.getMonthYearText($scope.dateLabels[monthIndex])
-        };
-        var filterThisMonth = $scope.filterByMonth2.bind(closure);
-        return $scope.jobs.findIndex(filterThisMonth) === -1;
+        var monthStr = $scope.getMonthYearText($scope.dateLabels[monthIndex]);
+        return $scope.jobs[monthStr].length === 0
+            && $scope.candidates[monthStr].length === 0;
     };
 
     $scope.getFiltMonthLabel = function(date) {
@@ -110,56 +50,6 @@ app.controller('HnJobsController',
         else {
             return $scope.getMonthYearText(date);
         }
-    }
-
-    if (angular.isUndefined(cacheStateService.userData.filtMonth)) {
-        // wait for dateLabels to be populated
-        $scope.$watch(
-            function() {
-                return $scope.dateLabels; },
-            function() {
-                cacheStateService.userData.filtMonth = $scope.dateLabels[0];
-                console.log("cached filtMonth:", cacheStateService.userData.filtMonth);
-                // TODO: this is cheating, fix it properly
-                // if the latest month hasn't been populated yet, forcus on
-                // the month before
-                $timeout(function() {
-                    if ($scope.noDataForThisMonth(0) && $scope.dateLabels.length > 1) {
-                        console.log("no data for latest month");
-                        cacheStateService.userData.filtMonth = $scope.dateLabels[1];
-                    }
-                }, 1000);
-                $scope.filtMonth = cacheStateService.userData.filtMonth;
-                $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
-
-                // optimization, call noDataForThisMonth in controller to prevent it from
-                // being called many times in the digest cycle
-                for (var i = 0; i < $scope.dateLabels.length; ++i) {
-                    $scope.disableMonth[i] = $scope.noDataForThisMonth(i);
-                }
-            }
-            );
-    }
-    else {
-        $scope.filtMonth = cacheStateService.userData.filtMonth;
-        $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
-        console.log("initially, filtMonth=", $scope.filtMonth);
-    }
-
-    $scope.selectMonth = function(setMonth) {
-        if (setMonth === 0) {
-            cacheStateService.userData.filtMonth = null;
-        }
-        else {
-            cacheStateService.userData.filtMonth = $scope.dateLabels[setMonth-1];
-        }
-        $scope.filtMonth = cacheStateService.userData.filtMonth;
-        $scope.filtMonthLabel = $scope.getFiltMonthLabel($scope.filtMonth);
-    };
-
-    $scope.filterByMonth = function(job) {
-        return $scope.filtMonth === null
-            || $scope.getMonthYearText($scope.filtMonth) === job.monthPosted;
     };
 
     $scope.selectSourceType = function(setTab) {
@@ -183,7 +73,7 @@ app.controller('HnJobsController',
     $scope.filterBySource = function(job) {
         return $scope.filtType === null
             || $scope.filtType === job.source;
-    }
+    };
 
     $scope.sharePost = function(post) {
         sharePostService.postId = post.id;
@@ -199,6 +89,154 @@ app.controller('HnJobsController',
         return angular.isUndefined(persistStateService.toggle[id])
             || persistStateService.toggle[id];
     };
+
+    $scope.updateSearchPattern = function() {
+        cacheStateService.setPattern($scope.search.searchPattern);
+    }
+
+    $scope.loadMore = function() {
+        $scope.totalDisplayed += 20;
+        cacheStateService.userData.totalDisplayed = $scope.totalDisplayed;
+    }
+
+    //
+    // actually controller logic
+    //
+    $scope.showPosts = false;
+    $scope.message = "Loading ...";
+    $scope.search = {};
+    $scope.getMonthYearText = dateMonthService.getMonthYearText;
+
+    // must match source field in the models
+    $scope.sourceTypes = [
+        "Who Is Hiring",
+        "Seeking Freelancer",
+        "Who Wants To Be Hired",
+        "Seeking Freelance Work",
+        ];
+
+    // true shows job post, otherwise show candidate post
+    $scope.showJob = cacheStateService.userData.showJob;
+    // TODO: totalDisplayed need to be an array, one per sourceTypes
+    $scope.totalDisplayed = cacheStateService.userData.totalDisplayed;
+
+    if (!angular.isUndefined(cacheStateService.userData.searchPattern)) {
+        $scope.search.searchPattern = cacheStateService.userData.searchPattern;
+        console.log("restore searchPattern, ", $scope.search.searchPattern);
+    }
+
+    if (angular.isUndefined(cacheStateService.userData.filtType)) {
+        cacheStateService.userData.filtType = $scope.sourceTypes[0];
+    }
+    $scope.filtType = cacheStateService.userData.filtType;
+    console.log("initially, filtType=", $scope.filtType);
+
+    $scope.jobs = {};
+    $scope.candidates = {};
+    $scope.disableMonth = [];
+
+    $scope.getAllJobs = function() {
+        // build "All" on demand
+        if ($scope.filtMonth === null) {
+            var totalJobs = [];
+            var totalCandidates = [];
+            for (var i = 0; i < $scope.dateLabels.length; ++i) {
+                totalJobs = totalJobs.concat(
+                    $scope.jobs[$scope.getFiltMonthLabel($scope.dateLabels[i])]
+                    );
+                totalCandidates = totalCandidates.concat(
+                    $scope.candidates[$scope.getFiltMonthLabel($scope.dateLabels[i])]
+                    );
+            }
+            console.log("tatalJobs=", totalJobs.length);
+            console.log("tatalCandidates=", totalCandidates.length);
+            $scope.jobs[$scope.getFiltMonthLabel($scope.filtMonth)] = totalJobs;
+            $scope.candidates[$scope.getFiltMonthLabel($scope.filtMonth)] = totalCandidates;
+
+            $scope.showPosts = true;
+        }
+    };
+
+    $scope.dateLabels = dateLabelsFactory.getDateLabels().query(
+        function(response) { // the response is the actual data
+            $scope.dateLabels = response;
+
+            var promises = [];
+
+            [
+             { api: hnJobsFactory.getHnJobsByMonth, container: $scope.jobs },
+             { api: hnJobsFactory.getHnCandidatesByMonth, container: $scope.candidates }
+            ].forEach(function(call) {
+
+                $scope.dateLabels.forEach(function(item) {
+                    var monthStr = dateMonthService.getMonthYearText(item);
+
+                    promises.push(
+                    call.api().query({month: monthStr})
+                    .$promise
+                    .then(
+                        function(response) {
+                            console.log("get response for", monthStr);
+                            call.container[monthStr] = response;
+
+                            // initialize filtMonth to latest month
+                            if (angular.isUndefined(cacheStateService.userData.filtMonth)
+                                && item.getTime() === $scope.dateLabels[0].getTime()) {
+
+                                cacheStateService.userData.filtMonth = item;
+                                console.log("cached filtMonth:", cacheStateService.userData.filtMonth);
+                            }
+
+                            $scope.setFiltMonth();
+
+                            // show data as soon as the chosen month is ready
+                            if ($scope.filtMonth === null 
+                                || item.getTime() === $scope.filtMonth.getTime()) {
+                                $scope.showPosts = true;
+                            }
+                        },
+                        function(response) {
+                            $scope.message = "Failed to get posts for " + monthStr + "\n"
+                                + "Error: " + response.status + " " + response.statusText;
+                        })
+                    );
+                });
+            });
+
+            $q.all(promises).then(function() {
+
+                // Optimization, call noDataForThisMonth in controller to prevent
+                // it from being called many times in the digest cycle
+                //
+                // Also make sure when a new month with no data is added but an
+                // older month has been saved as filtMonth, the new month is
+                // disabled
+                //
+                // TODO: if we handle empty month in server side, these logic
+                // become unnecessary
+                for (var i = 0; i < $scope.dateLabels.length; ++i) {
+                    $scope.disableMonth[i] = $scope.noDataForThisMonth(i);
+                    if ($scope.disableMonth[i]
+                        && $scope.filtMonth.getTime() === $scope.dateLabels[i].getTime()
+                        && i + 1 < $scope.dateLabels.length) {
+                        cacheStateService.userData.filtMonth = $scope.dateLabels[i+1];
+                        console.log("update cached filtMonth:", cacheStateService.userData.filtMonth);
+
+                        $scope.setFiltMonth();
+                    }
+                }
+
+                $scope.getAllJobs();
+
+            });
+
+        },
+        function(response) { // but here is the response object
+            $scope.message = "Failed to get date labels\n"
+                + "Error: " + response.status + " " + response.statusText;
+        }
+    );
+
 }])
 
 .controller('AnalyticsController',
