@@ -96,7 +96,7 @@ angular.module('hnJobsApp')
         var model = {
             postId: "",
             email: "",
-            content: "xx",
+            content: "",
             subject: "",
         };
 

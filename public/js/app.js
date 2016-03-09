@@ -1,5 +1,6 @@
 'use strict';
 
+// with [ ] this creates a new module
 var app = angular.module('hnJobsApp', ['ui.router', 'ngResource', 'app.config']);
 
 // add this to avoid # in the url, also need to add <base href='/'> in html

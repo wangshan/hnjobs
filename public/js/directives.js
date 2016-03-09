@@ -27,9 +27,10 @@ app.directive('scroller', ['$timeout', 'rememberPositionService',
 
 app.directive('back', ['$window', function($window) {
     return {
-        restrict: 'EA', // can be used as element or attribute
+        restrict: 'EA',
         link: function(scope, elem, attrs) {
             elem.bind('click', function() {
+                // have the save behaviour as if clicking browser's back button
                 $window.history.back();
             });
         }

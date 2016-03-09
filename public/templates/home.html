@@ -16,6 +16,7 @@
                     <div class="form-group">
                         <form class="form-search">
                             <div class="input-group">
+                                <!-- use debounce to delay binding -->
                                 <input type="text"
                                     class="form-control search-query"
                                     placeholder="word or regex..."
@@ -68,6 +69,7 @@
                     </li>
                 </ul>
                 <div class="tab-content" scroller>
+                    <!-- NOTE: ng-if creates its own scope -->
                     <ul class="media-list tab-pane fade in active"
                         ng-if="showJob">
                         <li class="media">
