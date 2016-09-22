@@ -1,167 +1,163 @@
-
-    <a href="https://github.com/wangshan/hnjobs">
-        <img style="position: absolute; top: 20; right: 0; border: 0;"
-        class="hidden-xs"
-        src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
-        alt="Fork me on GitHub"
-        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
-    </a>
-    <div class="container">
-        <div class="row row-content">
-            <div class="col-xs-12" ng-if="!showPosts">
-                <h3>{{message}}</h3>
+<a href="https://github.com/wangshan/hnjobs">
+    <img style="position: absolute; top: 20; right: 0; border: 0;"
+    class="hidden-xs"
+    src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
+    alt="Fork me on GitHub"
+    data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
+</a>
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12" ng-if="!showPosts">
+            <h3>{{message}}</h3>
+        </div>
+        <div class="col-xs-12" ng-if="showPosts">
+            <div class="form-horizontal search-box">
+                <form class="form-search">
+                    <div class="input-group">
+                        <!-- use debounce to delay binding -->
+                        <input type="text"
+                            class="form-control search-query"
+                            placeholder="word or regex, escape special character with \"
+                            ng-model="search.searchPattern"
+                            ng-model-options="{debounce: 400}"
+                            ng-change="updateSearchPattern()"/>
+                        <span class="input-group-btn">
+                            <button type="submit"
+                                class="btn btn-primary"> Search
+                            </button>
+                        </span>
+                    </div>
+                </form>
             </div>
-            <div class="col-xs-12" ng-if="showPosts">
-                <div class="form-horizontal col-xs-12">
-                    <div class="form-group">
-                        <form class="form-search">
-                            <div class="input-group">
-                                <!-- use debounce to delay binding -->
-                                <input type="text"
-                                    class="form-control search-query"
-                                    placeholder="word or regex..."
-                                    ng-model="search.searchPattern"
-                                    ng-model-options="{debounce: 400}"
-                                    ng-change="updateSearchPattern()"/>
-                                <span class="input-group-btn">
-                                    <button type="submit"
-                                        class="btn btn-primary"> Search
-                                    </button>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"
+                    class="pointer-on-tab"
+                    ng-repeat="source in sourceTypes"
+                    ng-class="{active: isSelected($index)}">
+                    <a ng-click="selectSourceType($index)"
+                        aria-controls="source"
+                        role="tab">{{ source }}</a>
+                </li>
+                <li role="presentation" class="dropdown">
+                    <a role="button" class="dropdown-toggle"
+                        type="button"
+                        id="month"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        {{ filtMonthLabel }}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="month">
+                        <li>
+                            <a ng-click="selectMonth(0)"
+                                aria-controls="All">
+                                All</a>
+                        </li>
+                        <li class="pointer-on-tab"
+                            ng-repeat="dateLabel in dateLabels"
+                            ng-class="{disabled: disableMonth[$index]}">
+                            <a ng-click="selectMonth($index+1)"
+                                aria-controls="getFiltMonthLabel(dateLabel)">
+                                {{ getFiltMonthLabel(dateLabel) }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="tab-content" scroller>
+                <!-- NOTE: ng-if creates its own scope -->
+                <ul class="media-list tab-pane fade in active"
+                    ng-if="showJob">
+                    <li class="media">
+                        <div ng-repeat-start="job in jobs[filtMonthLabel]
+                            | filter: filterBySource
+                            | regex: 'description': search.searchPattern
+                            | limitTo: totalDisplayed as filteredJobs">
+                        </div>
+                        <div class="panel panel-default" ng-repeat-end
+                            ng-show="filteredJobs.length > 0">
+                            <div class="panel-heading">
+                                <span class="btn-group" role="group" aria-label="...">
+                                    <a type="button"
+                                        class="glyphicon glyphicon-triangle-bottom"
+                                        ng-if="getToggleExpand(job.id)"
+                                        ng-click="setToggleExpand(job.id, false)"></a>
+                                    <a type="button"
+                                        class="glyphicon glyphicon-triangle-right"
+                                        ng-if="!getToggleExpand(job.id)"
+                                        ng-click="setToggleExpand(job.id, true)"></a>
+                                </span>
+                                <span class="badge">{{job.monthPosted}}</span>
+                                <span class="badge">{{job.source}}</span>
+                                <span class="badge">{{job.type | printArray: '/'}}</span>
+                                <span class="badge">{{job.time | date}}</span>
+                                <span class="badge">{{job.remote | printBool: 'remote'}}</span>
+                                <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
+                                <span class="pull-right">
+                                    <a type="button" class="label label-info"
+                                        ui-sref="app.jobdetails({id: job.id})"
+                                        ng-click="sharePost(job)">Share
+                                    </a>
                                 </span>
                             </div>
-                        </form>
-                        <br>
-                    </div>
-                </div>
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation"
-                        class="pointer-on-tab"
-                        ng-repeat="source in sourceTypes"
-                        ng-class="{active: isSelected($index)}">
-                        <a ng-click="selectSourceType($index)"
-                            aria-controls="source"
-                            role="tab">{{ source }}</a>
+                            <div class="panel-body" ng-if="getToggleExpand(job.id)">
+                                <p ng-bind-html="job.description | asHtml"></p>
+                            </div>
+                        </div>
+                        <div ng-show="filteredJobs.length === 0"><br>No Data Found</div>
                     </li>
-                    <li role="presentation" class="dropdown">
-                        <a role="button" class="dropdown-toggle"
-                            type="button"
-                            id="month"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            {{ filtMonthLabel }}
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="month">
-                            <li>
-                                <a ng-click="selectMonth(0)"
-                                    aria-controls="All">
-                                    All</a>
-                            </li>
-                            <li class="pointer-on-tab"
-                                ng-repeat="dateLabel in dateLabels"
-                                ng-class="{disabled: disableMonth[$index]}">
-                                <a ng-click="selectMonth($index+1)"
-                                    aria-controls="getFiltMonthLabel(dateLabel)">
-                                    {{ getFiltMonthLabel(dateLabel) }}</a>
-                            </li>
-                        </ul>
-                    </li>
+                    <button class="btn btn-warning btn-block"
+                        role="button"
+                        ng-show="filteredJobs.length >= totalDisplayed"
+                        ng-click="loadMore()">Load More
+                    </button>
                 </ul>
-                <div class="tab-content" scroller>
-                    <!-- NOTE: ng-if creates its own scope -->
-                    <ul class="media-list tab-pane fade in active"
-                        ng-if="showJob">
-                        <li class="media">
-                            <div ng-repeat-start="job in jobs[filtMonthLabel]
-                                | filter: filterBySource
-                                | regex: 'description': search.searchPattern
-                                | limitTo: totalDisplayed as filteredJobs">
+                <ul class="media-list tab-pane fade in active"
+                    ng-if="!showJob">
+                    <li class="media">
+                        <div ng-repeat-start="candidate in candidates[filtMonthLabel]
+                            | filter: filterBySource
+                            | regex: 'description': search.searchPattern
+                            | limitTo: totalDisplayed as filteredCandidates">
+                        </div>
+                        <div class="panel panel-default" ng-repeat-end
+                            ng-show="filteredCandidates.length > 0">
+                            <div class="panel-heading">
+                                <span class="btn-group" role="group" aria-label="...">
+                                    <a type="button"
+                                        class="glyphicon glyphicon-triangle-bottom"
+                                        ng-if="getToggleExpand(candidate.id)"
+                                        ng-click="setToggleExpand(candidate.id, false)"></a>
+                                    <a type="button"
+                                        class="glyphicon glyphicon-triangle-right"
+                                        ng-if="!getToggleExpand(candidate.id)"
+                                        ng-click="setToggleExpand(candidate.id, true)"></a>
+                                </span>
+                                <span class="badge">{{candidate.name}}</span>
+                                <span class="badge">{{candidate.monthPosted}}</span>
+                                <span class="badge">{{candidate.source}}</span>
+                                <span class="pull-right">
+                                    <a type="button" class="label label-info"
+                                        ui-sref="app.jobdetails({id: candidate.id})"
+                                        ng-click="sharePost(candidate)">Share
+                                    </a>
+                                </span>
                             </div>
-                            <div class="panel panel-default" ng-repeat-end
-                                ng-show="filteredJobs.length > 0">
-                                <div class="panel-heading">
-                                    <span class="btn-group" role="group" aria-label="...">
-                                        <a type="button"
-                                            class="glyphicon glyphicon-triangle-bottom"
-                                            ng-if="getToggleExpand(job.id)"
-                                            ng-click="setToggleExpand(job.id, false)"></a>
-                                        <a type="button"
-                                            class="glyphicon glyphicon-triangle-right"
-                                            ng-if="!getToggleExpand(job.id)"
-                                            ng-click="setToggleExpand(job.id, true)"></a>
-                                    </span>
-                                    <span class="badge">{{job.monthPosted}}</span>
-                                    <span class="badge">{{job.source}}</span>
-                                    <span class="badge">{{job.type | printArray: '/'}}</span>
-                                    <span class="badge">{{job.time | date}}</span>
-                                    <span class="badge">{{job.remote | printBool: 'remote'}}</span>
-                                    <span class="badge">{{job.onsite | printBool: 'onsite'}}</span>
-                                    <span class="pull-right">
-                                        <a type="button" class="label label-info"
-                                            ui-sref="app.jobdetails({id: job.id})"
-                                            ng-click="sharePost(job)">Share
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="panel-body" ng-if="getToggleExpand(job.id)">
-                                    <p ng-bind-html="job.description | asHtml"></p>
-                                </div>
+                            <div class="panel-body" ng-if="getToggleExpand(candidate.id)">
+                                <p ng-bind-html="candidate.description | asHtml"></p>
                             </div>
-                            <div ng-show="filteredJobs.length === 0"><br>No Data Found</div>
-                        </li>
-                        <button class="btn btn-warning btn-block"
-                            role="button"
-                            ng-show="filteredJobs.length >= totalDisplayed"
-                            ng-click="loadMore()">Load More
-                        </button>
-                    </ul>
-                    <ul class="media-list tab-pane fade in active"
-                        ng-if="!showJob">
-                        <li class="media">
-                            <div ng-repeat-start="candidate in candidates[filtMonthLabel]
-                                | filter: filterBySource
-                                | regex: 'description': search.searchPattern
-                                | limitTo: totalDisplayed as filteredCandidates">
-                            </div>
-                            <div class="panel panel-default" ng-repeat-end
-                                ng-show="filteredCandidates.length > 0">
-                                <div class="panel-heading">
-                                    <span class="btn-group" role="group" aria-label="...">
-                                        <a type="button"
-                                            class="glyphicon glyphicon-triangle-bottom"
-                                            ng-if="getToggleExpand(candidate.id)"
-                                            ng-click="setToggleExpand(candidate.id, false)"></a>
-                                        <a type="button"
-                                            class="glyphicon glyphicon-triangle-right"
-                                            ng-if="!getToggleExpand(candidate.id)"
-                                            ng-click="setToggleExpand(candidate.id, true)"></a>
-                                    </span>
-                                    <span class="badge">{{candidate.name}}</span>
-                                    <span class="badge">{{candidate.monthPosted}}</span>
-                                    <span class="badge">{{candidate.source}}</span>
-                                    <span class="pull-right">
-                                        <a type="button" class="label label-info"
-                                            ui-sref="app.jobdetails({id: candidate.id})"
-                                            ng-click="sharePost(candidate)">Share
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="panel-body" ng-if="getToggleExpand(candidate.id)">
-                                    <p ng-bind-html="candidate.description | asHtml"></p>
-                                </div>
-                            </div>
-                            <div ng-show="filteredCandidates.length === 0"><br>No Data Found</div>
-                        </li>
-                        <button class="btn btn-warning btn-block"
-                            role="button"
-                            ng-show="filteredCandidates.length >= totalDisplayed"
-                            ng-click="loadMore()">Load More
-                        </button>
-                    </ul>
-                </div>
+                        </div>
+                        <div ng-show="filteredCandidates.length === 0"><br>No Data Found</div>
+                    </li>
+                    <button class="btn btn-warning btn-block"
+                        role="button"
+                        ng-show="filteredCandidates.length >= totalDisplayed"
+                        ng-click="loadMore()">Load More
+                    </button>
+                </ul>
             </div>
-
         </div>
+
     </div>
+</div>
 
