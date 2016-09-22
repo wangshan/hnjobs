@@ -31,6 +31,9 @@
   position: absolute;
   top: 0;
 }
+.navbar {
+    max-height: 50px !important;
+}
 .navbar-inverse {
   background: #303f9f;
   color: #ffffff;
@@ -109,37 +112,41 @@ body {
   line-height: 20px;
 }
 input.search-query {
-    padding-left:26px;
+  padding-left:26px;
 }
 form.form-search {
-    position: relative;
+  position: relative;
 }
 form.form-search:before {
-    display: block;
-    width: 14px;
-    height: 14px;
-    content: "\e003";
-    font-family: 'Glyphicons Halflings';
-    background-position: -48px 0;
-    position: absolute;
-    top:8px;
-    left:8px;
-    opacity: .5;
-    z-index: 1000;
+  display: block;
+  width: 14px;
+  height: 14px;
+  content: "\e003";
+  font-family: 'Glyphicons Halflings';
+  background-position: -48px 0;
+  position: absolute;
+  top:8px;
+  left:8px;
+  opacity: .5;
+  z-index: 1000;
 }
 .pointer-on-tab {
-    cursor: pointer;
+  cursor: pointer;
 }
 .btn-fixed-width {
-    width: 64px !important;
+  width: 64px !important;
 }
 .btn-top-right {
-    position: absolute;
-    top: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .panel-default > .panel-heading .badge {
-    color: #fff;
-    background-color: #666;
+  color: #fff;
+  background-color: #666;
+}
+div.search-box {
+  width: 80%;
+  margin-bottom: 20px;
 }
 
