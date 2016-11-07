@@ -44,6 +44,9 @@ var parseWhosHiring = function(fileName, data, filter) {
         for (var i = 0; i < topics.length; ++i) {
             var topic = topics[i];
             var re = new RegExp(topic.text + filter, "gi");
+            console.log("data.title: ", data.title);
+            console.log("data.kids: ", data.kids);
+            console.log("data: ", data);
             if (re.test(data.title) && data.kids) {
                 data.kids.forEach(function(entry) {
                     //console.log("requesting item/" + entry);
